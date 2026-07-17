@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PACK8 // Production Dashboard — July 2026</title>
+<title>PACK8 // Production Control Room — July 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>
 /*!
  * Chart.js v4.4.4
@@ -25,231 +25,353 @@
 </script>
 <style>
 :root{
-  --bg-0:#0a0d10;
-  --bg-1:#10151a;
-  --panel:#141a20;
-  --panel-2:#1a2129;
-  --line:#232c35;
-  --line-soft:#1c242c;
-  --amber:#f2a93b;
+  --bg-0:#09090B;
+  --bg-1:#111827;
+  --panel:rgba(255,255,255,0.055);
+  --panel-2:rgba(255,255,255,0.075);
+  --glass:rgba(255,255,255,0.08);
+  --line:rgba(255,255,255,0.12);
+  --line-soft:rgba(255,255,255,0.07);
+  --primary:#3B82F6;
+  --primary-2:#6366F1;
+  --amber:#F59E0B;
   --amber-dim:#8a6a2c;
-  --green:#3fd68a;
-  --red:#f0525c;
-  --blue:#4fa3e3;
-  --violet:#9d7ee8;
-  --text-0:#e9edf1;
-  --text-1:#9aa7b2;
-  --text-2:#5f6b76;
-  --mono:'IBM Plex Mono', monospace;
-  --disp:'Rajdhani', sans-serif;
+  --green:#22C55E;
+  --red:#EF4444;
+  --blue:#3B82F6;
+  --violet:#8B5CF6;
+  --text-0:#FFFFFF;
+  --text-1:#C7CDD9;
+  --text-2:#94A3B8;
+  --mono:'Inter', sans-serif;
+  --disp:'Inter', sans-serif;
   --body:'Inter', sans-serif;
+  --r-lg:20px;
+  --r-md:14px;
+  --r-sm:10px;
+  --shadow-card:0 8px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.05);
+  --shadow-hover:0 20px 50px rgba(59,130,246,0.16), 0 10px 30px rgba(0,0,0,0.5);
+  --ease:cubic-bezier(.22,.9,.32,1);
 }
 *{box-sizing:border-box;}
-html,body{margin:0;padding:0;background:var(--bg-0);color:var(--text-0);font-family:var(--body);}
+*:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:6px;}
+html,body{margin:0;padding:0;background:var(--bg-0);color:var(--text-0);font-family:var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
 body{
-  background-image:
-    radial-gradient(circle at 12% 8%, rgba(242,169,59,0.05), transparent 40%),
-    radial-gradient(circle at 88% 92%, rgba(79,163,227,0.06), transparent 45%),
-    repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 34px),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 34px);
+  overflow-x:hidden;
+  font-variant-numeric:tabular-nums;
+  background:
+    radial-gradient(1100px 700px at 8% -6%, rgba(59,130,246,0.18), transparent 55%),
+    radial-gradient(900px 650px at 96% 8%, rgba(139,92,246,0.15), transparent 55%),
+    radial-gradient(700px 500px at 70% 45%, rgba(59,130,246,0.06), transparent 60%),
+    radial-gradient(1000px 800px at 50% 115%, rgba(34,197,94,0.07), transparent 60%),
+    linear-gradient(180deg, var(--bg-0), var(--bg-1) 130%);
+  background-attachment:fixed;
+  min-height:100vh;
+  position:relative;
 }
-::-webkit-scrollbar{width:10px;height:10px;}
-::-webkit-scrollbar-track{background:var(--bg-1);}
-::-webkit-scrollbar-thumb{background:#2a3540;border-radius:6px;}
-::-webkit-scrollbar-thumb:hover{background:#37444f;}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.035;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.wrap{position:relative;z-index:1;}
+::-webkit-scrollbar{width:9px;height:9px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.14);border-radius:8px;}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.24);}
 
 a{color:inherit;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+@keyframes cardIn{from{opacity:0;transform:translateY(10px) scale(.98);}to{opacity:1;transform:none;}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.35;}}
+@keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-.wrap{max-width:1720px;margin:0 auto;padding:20px 26px 60px;}
+.wrap{max-width:1760px;margin:0 auto;padding:24px 28px 70px;}
+
+/* ---------- Glass base ---------- */
+.glass{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--r-lg);
+  backdrop-filter:blur(24px) saturate(160%);
+  -webkit-backdrop-filter:blur(24px) saturate(160%);
+  box-shadow:var(--shadow-card);
+}
 
 /* ---------- Header ---------- */
 .topbar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:16px 22px;margin-bottom:18px;
-  background:linear-gradient(180deg, var(--panel-2), var(--panel));
-  border:1px solid var(--line);border-radius:14px;
-  position:sticky;top:10px;z-index:50;
-  box-shadow:0 10px 30px rgba(0,0,0,0.35);
-  backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding:16px 24px;margin-bottom:20px;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);
+  position:sticky;top:12px;z-index:50;
+  box-shadow:var(--shadow-card);
+  backdrop-filter:blur(24px) saturate(160%);
+  -webkit-backdrop-filter:blur(24px) saturate(160%);
+  animation:fadein .5s var(--ease) both;
 }
 .brand{display:flex;align-items:center;gap:14px;}
 .brand .mark{
-  width:42px;height:42px;border-radius:10px;
-  background:conic-gradient(from 220deg, var(--amber), #d97f1e, var(--amber));
+  width:44px;height:44px;border-radius:13px;flex-shrink:0;
+  background:linear-gradient(135deg, var(--primary), var(--primary-2));
   display:flex;align-items:center;justify-content:center;
-  font-family:var(--disp);font-weight:700;font-size:16px;color:#1a1305;
-  box-shadow:0 0 0 3px rgba(242,169,59,0.12), 0 0 22px rgba(242,169,59,0.25);
+  font-family:var(--disp);font-weight:800;font-size:16px;color:#fff;letter-spacing:.2px;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.14) inset, 0 8px 24px rgba(59,130,246,0.4);
 }
-.brand .titles{display:flex;flex-direction:column;line-height:1.1;}
-.brand .t1{font-family:var(--disp);font-weight:700;font-size:22px;letter-spacing:0.5px;color:var(--text-0);}
-.brand .t2{font-family:var(--mono);font-size:11px;letter-spacing:2.5px;color:var(--text-1);text-transform:uppercase;margin-top:2px;}
-.status-cluster{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.brand .titles{display:flex;flex-direction:column;line-height:1.15;}
+.brand .t1{font-family:var(--disp);font-weight:700;font-size:19px;letter-spacing:-0.2px;color:var(--text-0);}
+.brand .t2{font-family:var(--body);font-weight:500;font-size:11.5px;letter-spacing:0.3px;color:var(--text-2);margin-top:2px;}
+.status-cluster{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .pill{
-  display:flex;align-items:center;gap:8px;
-  padding:8px 13px;border-radius:999px;border:1px solid var(--line);
-  background:var(--bg-1);font-family:var(--mono);font-size:12px;color:var(--text-1);
+  display:flex;align-items:center;gap:7px;
+  padding:7px 13px;border-radius:999px;border:1px solid var(--line-soft);
+  background:rgba(255,255,255,0.04);font-family:var(--body);font-weight:500;font-size:12px;color:var(--text-2);
+  white-space:nowrap;
 }
 .pill .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.35;}}
-.pill b{color:var(--text-0);font-weight:500;}
-.clock{font-family:var(--mono);font-size:12px;color:var(--amber);}
+.pill b{color:var(--text-0);font-weight:600;}
+.clock{font-family:var(--body);font-weight:600;font-variant-numeric:tabular-nums;font-size:12.5px;color:var(--primary);padding:0 2px;}
 
-/* ---------- Nav Tabs ---------- */
+/* ---------- Nav Tabs (segmented control) ---------- */
 .nav{
-  display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;
-  border-bottom:1px solid var(--line);padding-bottom:0;
+  display:flex;gap:4px;margin-bottom:20px;flex-wrap:wrap;
+  background:var(--panel);border:1px solid var(--line);border-radius:999px;
+  padding:5px;width:fit-content;max-width:100%;overflow-x:auto;
+  box-shadow:var(--shadow-card);
+  animation:fadein .5s var(--ease) .05s both;
 }
 .nav button{
-  font-family:var(--disp);font-weight:600;font-size:15px;letter-spacing:0.4px;
-  background:transparent;border:none;color:var(--text-1);
-  padding:10px 18px;cursor:pointer;border-radius:8px 8px 0 0;
-  position:relative;transition:color .15s ease, background .15s ease;
+  font-family:var(--disp);font-weight:600;font-size:13.5px;letter-spacing:0.1px;
+  background:transparent;border:none;color:var(--text-2);
+  padding:9px 18px;cursor:pointer;border-radius:999px;white-space:nowrap;
+  position:relative;transition:color .2s var(--ease), background .2s var(--ease);
 }
-.nav button:hover{color:var(--text-0);background:rgba(255,255,255,0.02);}
-.nav button.active{color:var(--amber);}
-.nav button.active::after{
-  content:'';position:absolute;left:10%;right:10%;bottom:-1px;height:2px;background:var(--amber);
-  box-shadow:0 0 8px var(--amber);
-}
+.nav button:hover{color:var(--text-0);background:rgba(255,255,255,0.05);}
+.nav button.active{color:#fff;background:linear-gradient(135deg, var(--primary), var(--primary-2));box-shadow:0 4px 16px rgba(59,130,246,0.4);}
 
 .view{display:none;}
-.view.active{display:block;animation:fadein .25s ease;}
-@keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+.view.active{display:block;animation:fadein .35s var(--ease);}
 
 /* ---------- Filter bar ---------- */
 .filterbar{
-  display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;
-  background:var(--panel);border:1px solid var(--line);border-radius:12px;
-  padding:14px 16px;margin-bottom:20px;
+  display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:16px 18px;margin-bottom:18px;
+  box-shadow:var(--shadow-card);
+  animation:fadein .4s var(--ease) both;
 }
-.fgroup{display:flex;flex-direction:column;gap:5px;min-width:150px;}
-.fgroup label{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-2);}
+.fgroup{display:flex;flex-direction:column;gap:6px;min-width:150px;}
+.fgroup label{font-family:var(--body);font-weight:600;font-size:10.5px;letter-spacing:0.8px;text-transform:uppercase;color:var(--text-2);}
 .fgroup select, .fgroup input{
-  background:var(--bg-1);border:1px solid var(--line);color:var(--text-0);
-  border-radius:8px;padding:8px 10px;font-family:var(--body);font-size:13px;outline:none;
-  min-width:150px;
+  background:rgba(255,255,255,0.05);border:1px solid var(--line);color:var(--text-0);
+  border-radius:var(--r-sm);padding:9px 11px;font-family:var(--body);font-size:13px;outline:none;
+  min-width:150px;transition:border-color .15s ease, background .15s ease;
+  color-scheme:dark;
 }
-.fgroup select:focus, .fgroup input:focus{border-color:var(--amber);}
-.fgroup select[multiple]{min-height:34px;}
+.fgroup select:hover, .fgroup input:hover{background:rgba(255,255,255,0.07);}
+.fgroup select:focus, .fgroup input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(59,130,246,0.18);}
 .searchbox{flex:1;min-width:200px;}
 .btn{
-  font-family:var(--disp);font-weight:600;font-size:13px;letter-spacing:0.4px;
-  padding:9px 16px;border-radius:8px;border:1px solid var(--line);
-  background:var(--bg-1);color:var(--text-1);cursor:pointer;transition:all .15s ease;
+  font-family:var(--disp);font-weight:600;font-size:13px;letter-spacing:0.1px;
+  padding:9px 18px;border-radius:999px;border:1px solid var(--line);
+  background:rgba(255,255,255,0.05);color:var(--text-1);cursor:pointer;transition:all .18s var(--ease);
+  position:relative;overflow:hidden;
 }
-.btn:hover{color:var(--text-0);border-color:#37444f;}
-.btn.primary{background:linear-gradient(180deg,#f6bd63,var(--amber));color:#1a1305;border:none;}
-.btn.primary:hover{filter:brightness(1.08);}
-.filter-note{font-family:var(--mono);font-size:11px;color:var(--text-2);margin:-6px 0 16px 2px;}
+.btn:hover{color:var(--text-0);border-color:rgba(255,255,255,0.24);background:rgba(255,255,255,0.09);transform:translateY(-1px);}
+.btn:active{transform:translateY(0);}
+.btn.primary{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;box-shadow:0 6px 20px rgba(59,130,246,0.35);}
+.btn.primary:hover{box-shadow:0 8px 26px rgba(59,130,246,0.5);filter:brightness(1.06);}
+.btn:disabled{opacity:.6;cursor:default;transform:none;}
+.filter-note{font-family:var(--body);font-size:11.5px;color:var(--text-2);margin:-4px 0 16px 4px;}
 
 .msel{position:relative;min-width:150px;}
 .msel-btn{
-  width:100%;text-align:left;background:var(--bg-1);border:1px solid var(--line);color:var(--text-0);
-  border-radius:8px;padding:8px 30px 8px 10px;font-family:var(--body);font-size:13px;cursor:pointer;
-  position:relative;
+  width:100%;text-align:left;background:rgba(255,255,255,0.05);border:1px solid var(--line);color:var(--text-0);
+  border-radius:var(--r-sm);padding:9px 30px 9px 11px;font-family:var(--body);font-size:13px;cursor:pointer;
+  position:relative;transition:border-color .15s ease,background .15s ease;
 }
-.msel-btn::after{content:'\25BE';position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--text-2);}
-.msel-btn:hover{border-color:#37444f;}
-.msel.open .msel-btn{border-color:var(--amber);}
+.msel-btn:hover{background:rgba(255,255,255,0.07);}
+.msel-btn::after{content:'\25BE';position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--text-2);transition:transform .2s var(--ease);}
+.msel.open .msel-btn{border-color:var(--primary);box-shadow:0 0 0 3px rgba(59,130,246,0.18);}
+.msel.open .msel-btn::after{transform:translateY(-50%) rotate(180deg);}
 .msel-panel{
-  display:none;position:absolute;top:calc(100% + 6px);left:0;min-width:210px;max-height:260px;overflow:auto;
-  background:#161d24;border:1px solid var(--line);border-radius:10px;padding:6px;z-index:100;
-  box-shadow:0 14px 34px rgba(0,0,0,0.5);
+  position:absolute;top:calc(100% + 8px);left:0;width:max-content;max-width:min(260px, 88vw);max-height:270px;overflow:auto;
+  background:rgba(17,20,26,0.85);border:1px solid var(--line);border-radius:var(--r-md);padding:6px;z-index:100;
+  box-shadow:0 20px 50px rgba(0,0,0,0.55);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);
+  opacity:0;visibility:hidden;transform:translateY(-8px) scale(.98);transform-origin:top left;
+  transition:opacity .18s var(--ease), transform .18s var(--ease), visibility .18s;
 }
-.msel.open .msel-panel{display:block;}
+.msel.open .msel-panel{opacity:1;visibility:visible;transform:none;}
 .msel-item{
-  display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;cursor:pointer;
-  font-family:var(--mono);font-size:12.5px;color:var(--text-0);
+  display:flex;align-items:center;gap:9px;padding:8px 9px;border-radius:8px;cursor:pointer;
+  font-family:var(--body);font-size:13px;color:var(--text-0);transition:background .12s ease;
 }
-.msel-item:hover{background:rgba(242,169,59,0.1);}
-.msel-item input{accent-color:#f2a93b;width:14px;height:14px;cursor:pointer;}
-.msel-actions{display:flex;justify-content:space-between;padding:4px 6px 2px;border-top:1px solid var(--line-soft);margin-top:4px;}
+.msel-item:hover{background:rgba(59,130,246,0.14);}
+.msel-item input{accent-color:var(--primary);width:15px;height:15px;cursor:pointer;}
+.msel-actions{display:flex;justify-content:space-between;padding:6px 7px 2px;border-top:1px solid var(--line-soft);margin-top:4px;}
 .msel-actions button{
-  background:none;border:none;color:var(--amber);font-family:var(--mono);font-size:11px;cursor:pointer;padding:4px 6px;
+  background:none;border:none;color:var(--primary);font-family:var(--body);font-weight:600;font-size:11.5px;cursor:pointer;padding:5px 7px;border-radius:6px;
 }
-.msel-actions button:hover{text-decoration:underline;}
+.msel-actions button:hover{background:rgba(59,130,246,0.14);}
 
 /* ---------- KPI grid ---------- */
 .kpi-grid{
-  display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px;
+  display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px;
 }
 @media(max-width:1400px){.kpi-grid{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:800px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.kpi-grid{grid-template-columns:1fr;}}
 .kpi{
-  background:linear-gradient(160deg, var(--panel-2), var(--panel));
-  border:1px solid var(--line);border-radius:12px;padding:15px 16px;
-  position:relative;overflow:hidden;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);padding:17px 18px;
+  position:relative;overflow:hidden;transition:transform .25s var(--ease), box-shadow .25s var(--ease), border-color .25s var(--ease);
+  backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%);
+  box-shadow:var(--shadow-card);
+  animation:cardIn .45s var(--ease) both;
 }
+.kpi:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.22);box-shadow:var(--shadow-hover);}
 .kpi::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent,var(--amber));
+  content:'';position:absolute;inset:0;border-radius:var(--r-lg);padding:1px;
+  background:linear-gradient(140deg, var(--accent,var(--primary)) 0%, transparent 35%);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+  opacity:.5;pointer-events:none;
 }
-.kpi .k-label{font-family:var(--mono);font-size:10px;letter-spacing:1.3px;text-transform:uppercase;color:var(--text-2);}
-.kpi .k-value{font-family:var(--mono);font-weight:600;font-size:25px;color:var(--text-0);margin-top:6px;}
-.kpi .k-sub{font-family:var(--body);font-size:11.5px;color:var(--text-1);margin-top:4px;}
-.kpi .k-unit{font-size:13px;color:var(--text-2);margin-left:4px;}
+.k-top{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.k-icon{
+  width:30px;height:30px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  background:color-mix(in srgb, var(--accent,var(--primary)) 18%, transparent);
+  color:var(--accent,var(--primary));
+}
+.k-icon svg{width:16px;height:16px;}
+.kpi .k-label{font-family:var(--body);font-weight:600;font-size:10.5px;letter-spacing:0.8px;text-transform:uppercase;color:var(--text-2);}
+.kpi .k-value{font-family:var(--disp);font-weight:700;font-size:26px;letter-spacing:-0.4px;color:var(--text-0);}
+.kpi .k-sub{font-family:var(--body);font-size:11.5px;color:var(--text-2);margin-top:6px;line-height:1.4;}
+.kpi .k-unit{font-size:13px;font-weight:500;color:var(--text-2);margin-left:4px;}
 
 /* ---------- Panels & charts ---------- */
-.grid-2{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-bottom:14px;}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
+.grid-2{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:16px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
 @media(max-width:1100px){.grid-2,.grid-3{grid-template-columns:1fr;}}
 .panel{
-  background:var(--panel);border:1px solid var(--line);border-radius:12px;
-  padding:16px 18px;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:20px 22px;box-shadow:var(--shadow-card);
+  backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%);
+  transition:border-color .25s ease;
+  animation:cardIn .45s var(--ease) both;
 }
+.panel:hover{border-color:rgba(255,255,255,0.16);}
 .panel h3{
-  font-family:var(--disp);font-size:16px;font-weight:600;letter-spacing:0.3px;
-  margin:0 0 3px;color:var(--text-0);display:flex;align-items:center;justify-content:space-between;
+  font-family:var(--disp);font-size:15.5px;font-weight:700;letter-spacing:-0.1px;
+  margin:0 0 4px;color:var(--text-0);display:flex;align-items:center;justify-content:space-between;
 }
-.panel .ph-note{font-family:var(--mono);font-size:10.5px;color:var(--text-2);margin-bottom:12px;}
+.panel .ph-note{font-family:var(--body);font-size:11.5px;color:var(--text-2);margin-bottom:14px;}
 .chart-box{position:relative;height:280px;}
 .chart-box.tall{height:340px;}
 .chart-box.short{height:220px;}
 
 /* ---------- Tables ---------- */
-.table-wrap{overflow:auto;max-height:520px;border-radius:10px;border:1px solid var(--line-soft);}
+.table-wrap{overflow:auto;max-height:520px;border-radius:var(--r-md);border:1px solid var(--line-soft);}
 table{width:100%;border-collapse:collapse;font-size:13px;}
 thead th{
-  position:sticky;top:0;background:#1b232b;color:var(--text-1);
-  font-family:var(--mono);font-size:10.5px;letter-spacing:1px;text-transform:uppercase;
-  text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);cursor:pointer;user-select:none;
-  white-space:nowrap;
+  position:sticky;top:0;background:rgba(20,24,32,0.92);backdrop-filter:blur(10px);color:var(--text-2);
+  font-family:var(--body);font-weight:600;font-size:10.5px;letter-spacing:0.6px;text-transform:uppercase;
+  text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer;user-select:none;
+  white-space:nowrap;transition:color .15s ease;
 }
-thead th:hover{color:var(--amber);}
-thead th.sort-asc::after{content:' \25B2';color:var(--amber);}
-thead th.sort-desc::after{content:' \25BC';color:var(--amber);}
-tbody td{padding:8px 12px;border-bottom:1px solid var(--line-soft);color:var(--text-0);font-family:var(--mono);font-size:12.5px;white-space:nowrap;}
-tbody tr:nth-child(even){background:rgba(255,255,255,0.015);}
-tbody tr:hover{background:rgba(242,169,59,0.06);}
-tfoot td{padding:10px 12px;font-family:var(--mono);font-weight:600;color:var(--amber);background:#171e25;border-top:1px solid var(--line);}
-.badge{padding:2px 8px;border-radius:6px;font-size:11px;font-family:var(--mono);}
-.badge.good{background:rgba(63,214,138,0.13);color:var(--green);}
-.badge.warn{background:rgba(242,169,59,0.13);color:var(--amber);}
-.badge.bad{background:rgba(240,82,92,0.13);color:var(--red);}
+thead th:hover{color:var(--primary);}
+thead th.sort-asc::after{content:' \25B2';color:var(--primary);}
+thead th.sort-desc::after{content:' \25BC';color:var(--primary);}
+tbody td{padding:9px 14px;border-bottom:1px solid var(--line-soft);color:var(--text-1);font-family:var(--body);font-variant-numeric:tabular-nums;font-size:12.5px;white-space:nowrap;}
+tbody tr{transition:background .12s ease;}
+tbody tr:nth-child(even){background:rgba(255,255,255,0.02);}
+tbody tr:hover{background:rgba(59,130,246,0.08);}
+tbody tr:hover td{color:var(--text-0);}
+tfoot td{padding:11px 14px;font-family:var(--disp);font-weight:700;color:var(--primary);background:rgba(59,130,246,0.08);border-top:1px solid var(--line);}
+.badge{padding:3px 9px;border-radius:999px;font-size:11px;font-weight:600;font-family:var(--body);}
+.badge.good{background:rgba(34,197,94,0.15);color:var(--green);}
+.badge.warn{background:rgba(245,158,11,0.15);color:var(--amber);}
+.badge.bad{background:rgba(239,68,68,0.15);color:var(--red);}
+
+.pagination{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:12px 4px 2px;font-family:var(--body);font-size:12.5px;color:var(--text-2);}
+.pagination button{
+  background:rgba(255,255,255,0.05);border:1px solid var(--line);color:var(--text-1);
+  border-radius:8px;padding:6px 12px;cursor:pointer;font-family:var(--body);font-weight:600;font-size:12px;transition:all .15s ease;
+}
+.pagination button:hover:not(:disabled){background:rgba(59,130,246,0.14);color:var(--text-0);border-color:var(--primary);}
+.pagination button:disabled{opacity:.4;cursor:default;}
+.pagination select{background:rgba(255,255,255,0.05);border:1px solid var(--line);color:var(--text-1);border-radius:8px;padding:6px 9px;font-family:var(--body);font-size:12px;}
 
 /* ---------- Machine cards / pages ---------- */
 .machine-picker{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
 .machine-chip{
-  font-family:var(--mono);font-size:12px;padding:8px 14px;border-radius:8px;
-  border:1px solid var(--line);background:var(--panel);color:var(--text-1);cursor:pointer;
+  font-family:var(--body);font-weight:600;font-size:12.5px;padding:9px 16px;border-radius:999px;
+  border:1px solid var(--line);background:var(--panel);color:var(--text-2);cursor:pointer;
+  transition:all .18s var(--ease);backdrop-filter:blur(10px);
 }
-.machine-chip.active{border-color:var(--amber);color:var(--amber);background:rgba(242,169,59,0.08);}
+.machine-chip:hover{color:var(--text-0);border-color:rgba(255,255,255,0.24);transform:translateY(-1px);}
+.machine-chip.active{border-color:transparent;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary-2));box-shadow:0 6px 18px rgba(59,130,246,0.4);}
 .machine-detail{display:none;}
-.machine-detail.active{display:block;}
+.machine-detail.active{display:block;animation:fadein .35s var(--ease);}
 
-.legend-row{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--text-1);}
+.legend-row{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-family:var(--body);font-size:11.5px;color:var(--text-2);}
 .legend-row span{display:inline-flex;align-items:center;gap:6px;}
 .legend-row i{width:9px;height:9px;border-radius:2px;display:inline-block;}
 
 .footer-note{
-  text-align:center;font-family:var(--mono);font-size:11px;color:var(--text-2);
-  margin-top:30px;padding-top:18px;border-top:1px solid var(--line-soft);
+  text-align:center;font-family:var(--body);font-size:11.5px;color:var(--text-2);
+  margin-top:34px;padding-top:20px;border-top:1px solid var(--line-soft);line-height:1.6;
 }
 
 .section-title{
-  font-family:var(--disp);font-weight:700;font-size:20px;color:var(--text-0);
-  margin:26px 0 12px;padding-left:12px;border-left:3px solid var(--amber);
+  font-family:var(--disp);font-weight:700;font-size:19px;color:var(--text-0);
+  margin:28px 0 12px;padding-left:14px;border-left:3px solid var(--primary);
 }
-.empty-msg{padding:26px;text-align:center;color:var(--text-2);font-family:var(--mono);font-size:12px;}
+.empty-msg{padding:30px;text-align:center;color:var(--text-2);font-family:var(--body);font-size:12.5px;}
+
+/* ---------- Skeleton loading ---------- */
+.skeleton{
+  background:linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 37%, rgba(255,255,255,0.04) 63%);
+  background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;border-radius:8px;
+}
+.spinner{
+  width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.25);border-top-color:#fff;
+  display:inline-block;animation:spin .7s linear infinite;
+}
+
+@media(max-width:640px){
+  .wrap{padding:14px 12px 50px;}
+  .topbar{padding:12px 14px;border-radius:var(--r-md);}
+  .brand .t1{font-size:16px;}
+  .brand .t2{display:none;}
+  .status-cluster{gap:6px;}
+  .pill{padding:6px 10px;font-size:11px;}
+  .panel,.filterbar{padding:14px;}
+}
+
+/* ---------- Ripple ---------- */
+.btn, .nav button, .machine-chip, .msel-btn{position:relative;overflow:hidden;}
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,0.4);transform:scale(0);animation:rippleAnim .6s ease-out;pointer-events:none;}
+@keyframes rippleAnim{to{transform:scale(3);opacity:0;}}
+
+/* ---------- KPI trend indicator ---------- */
+.k-trend{display:inline-flex;align-items:center;gap:3px;font-family:var(--body);font-weight:700;font-size:11px;padding:2px 7px;border-radius:999px;margin-left:8px;vertical-align:middle;}
+.k-trend.up{color:var(--green);background:rgba(34,197,94,0.14);}
+.k-trend.down{color:var(--red);background:rgba(239,68,68,0.14);}
+.k-trend svg{width:10px;height:10px;}
+
+/* ---------- Machine status dot ---------- */
+.status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:7px;vertical-align:middle;}
+.status-dot.running{background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite;}
+.status-dot.idle{background:var(--text-2);}
+
+/* ---------- Progress bar ---------- */
+.progress-track{width:100%;height:6px;border-radius:999px;background:rgba(255,255,255,0.08);overflow:hidden;margin-top:10px;}
+.progress-fill{height:100%;border-radius:999px;transition:width .8s var(--ease);background:linear-gradient(90deg, var(--primary), var(--green));}
+
+/* ---------- Search icon ---------- */
+#f-search, #dt-search{padding-left:34px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='M21 21l-4.3-4.3'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:11px center;}
+
+/* ---------- Skeleton card sizing ---------- */
+.skel-card{display:flex;flex-direction:column;}
 </style>
 </head>
 <body>
@@ -264,7 +386,9 @@ tfoot td{padding:10px 12px;font-family:var(--mono);font-weight:600;color:var(--a
       </div>
     </div>
     <div class="status-cluster">
-      <div class="pill"><span class="dot"></span> <b id="hdrMonth">Loading&hellip;</b></div>
+      <div class="pill" id="pillConnection"><span class="dot"></span> <b id="hdrConnection">Connecting&hellip;</b></div>
+      <div class="pill"><b id="hdrMonth">Loading&hellip;</b></div>
+      <div class="pill">TODAY <b id="hdrToday">&mdash;</b></div>
       <div class="pill">LATEST <b id="hdrCutoff">&mdash;</b></div>
       <div class="pill">RECORDS <b id="hdrRecords">0</b></div>
       <div class="pill">UPDATED <b id="lastUpdated">&mdash;</b></div>
@@ -323,7 +447,13 @@ tfoot td{padding:10px 12px;font-family:var(--mono);font-weight:600;color:var(--a
     </div>
     <div class="filter-note">Click a filter to open its dropdown and tick multiple values. All KPIs, charts and tables update instantly from filtered records.</div>
 
-    <div class="kpi-grid" id="kpiGrid"></div>
+    <div class="kpi-grid" id="kpiGrid">
+      <div class="kpi skel-card"><div class="skeleton" style="width:30px;height:30px;border-radius:9px;margin-bottom:12px;"></div><div class="skeleton" style="width:70%;height:10px;margin-bottom:10px;"></div><div class="skeleton" style="width:50%;height:24px;"></div></div>
+      <div class="kpi skel-card"><div class="skeleton" style="width:30px;height:30px;border-radius:9px;margin-bottom:12px;"></div><div class="skeleton" style="width:70%;height:10px;margin-bottom:10px;"></div><div class="skeleton" style="width:50%;height:24px;"></div></div>
+      <div class="kpi skel-card"><div class="skeleton" style="width:30px;height:30px;border-radius:9px;margin-bottom:12px;"></div><div class="skeleton" style="width:70%;height:10px;margin-bottom:10px;"></div><div class="skeleton" style="width:50%;height:24px;"></div></div>
+      <div class="kpi skel-card"><div class="skeleton" style="width:30px;height:30px;border-radius:9px;margin-bottom:12px;"></div><div class="skeleton" style="width:70%;height:10px;margin-bottom:10px;"></div><div class="skeleton" style="width:50%;height:24px;"></div></div>
+      <div class="kpi skel-card"><div class="skeleton" style="width:30px;height:30px;border-radius:9px;margin-bottom:12px;"></div><div class="skeleton" style="width:70%;height:10px;margin-bottom:10px;"></div><div class="skeleton" style="width:50%;height:24px;"></div></div>
+    </div>
 
     <div class="grid-2">
       <div class="panel">
@@ -484,6 +614,13 @@ tfoot td{padding:10px 12px;font-family:var(--mono);font-weight:600;color:var(--a
           </tr></tfoot>
         </table>
       </div>
+      <div class="pagination" id="dt-pagination">
+        <span>Rows per page</span>
+        <select id="dt-pagesize"><option>25</option><option selected>50</option><option>100</option><option>250</option></select>
+        <button id="dt-prev" type="button">&larr; Prev</button>
+        <span id="dt-pageinfo">Page 1</span>
+        <button id="dt-next" type="button">Next &rarr;</button>
+      </div>
     </div>
   </div>
 
@@ -509,8 +646,49 @@ var ALL_SHIFTS = [];
 var MONTH_LABEL = '';
 var lastSelectedMachine = null;
 
-var COLORS = ['#f2a93b','#4fa3e3','#3fd68a','#f0525c','#9d7ee8','#e39a4f','#5fc9e8','#c9d65f','#e87ea0','#7ee8b8','#e8c37e'];
+var COLORS = ['#3B82F6','#8B5CF6','#22C55E','#F59E0B','#EF4444','#6366F1','#22D3EE','#EC4899','#84CC16','#14B8A6','#F97316'];
 function colorFor(i){ return COLORS[i % COLORS.length]; }
+function iconFor(label){
+  var icons = {
+    'Total Production':'<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>',
+    'Total Qty':'<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>',
+    'Total Weight':'<path d="M6 3h12l3 7-9 11L3 10z"/>',
+    'Total Rejection':'<path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>',
+    'Efficiency':'<circle cx="12" cy="13" r="8"/><path d="M12 13l3.5-3.5"/><path d="M9 3h6"/>',
+    "Today's Production":'<rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+    'Average Production':'<path d="M3 3v18h18"/><path d="M7 15l4-6 4 3 5-8"/>',
+    'Machine Count':'<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 9h6v6H9z"/><path d="M4 9h2M4 15h2M18 9h2M18 15h2M9 4v2M15 4v2M9 18v2M15 18v2"/>',
+    'Operator Count':'<circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.4 2.9-6 6.5-6s6.5 2.6 6.5 6"/><circle cx="17" cy="8" r="2.6"/><path d="M16 14.2c2.4.5 4 2.6 4 5.3"/>',
+    'Product Count':'<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/>',
+    'Monthly Production':'<rect x="3" y="4" width="18" height="18" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/><path d="M8 15l2.5 2.5L16 12"/>',
+    'Daily Average':'<path d="M12 2v20M2 12h20"/>',
+    'Top Machine':'<path d="M8 21h8M12 17v4"/><path d="M17 3H7v6a5 5 0 0 0 10 0V3z"/><path d="M17 5h2.5a2.5 2.5 0 0 1 0 5H17M7 5H4.5a2.5 2.5 0 0 0 0 5H7"/>',
+    'Top Operator':'<path d="M12 2l2.8 6.2 6.7.6-5.1 4.5 1.6 6.6L12 16.6 5.9 19.9l1.6-6.6-5.1-4.5 6.7-.6z"/>',
+    'Best Efficiency':'<path d="M12 2l3 6.1 6.7.9-4.9 4.6 1.2 6.6L12 17l-5.9 3.2 1.2-6.6-4.9-4.6 6.7-.9z"/>',
+    'Worst Rejection':'<circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v6"/><path d="M12 16.8h.01"/>'
+  };
+  return icons[label] || '<circle cx="12" cy="12" r="9"/>';
+}
+function iconSvg(label){
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+iconFor(label)+'</svg>';
+}
+function animateCount(el){
+  var raw = parseFloat(el.getAttribute('data-raw'));
+  if(isNaN(raw)) return;
+  var fmt = el.getAttribute('data-fmt') || 'int';
+  var duration = 750, startTime = null;
+  var numEl = el.querySelector('.k-num');
+  if(!numEl) return;
+  function step(ts){
+    if(!startTime) startTime = ts;
+    var p = Math.min((ts-startTime)/duration, 1);
+    var eased = 1 - Math.pow(1-p, 3);
+    var current = raw * eased;
+    numEl.textContent = fmt==='pct' ? fmtPct(current) : fmt==='num1' ? fmtNum(current,1) : fmtInt(current);
+    if(p<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
 
 // ---------------- utilities ----------------
 function uniq(arr){ return Array.from(new Set(arr)); }
@@ -759,16 +937,45 @@ function upsertChart(id, config){
 }
 
 var CHART_DEFAULTS = {
-  color: '#9aa7b2',
-  gridColor: 'rgba(255,255,255,0.05)'
+  color: '#94A3B8',
+  gridColor: 'rgba(255,255,255,0.06)'
 };
 Chart.defaults.color = CHART_DEFAULTS.color;
 Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.font.size = 11.5;
 Chart.defaults.borderColor = CHART_DEFAULTS.gridColor;
-Chart.defaults.plugins.legend.labels.boxWidth = 12;
-Chart.defaults.plugins.legend.labels.font = {family:"'IBM Plex Mono', monospace", size:11};
+Chart.defaults.animation = { duration: 750, easing: 'easeOutQuart' };
+Chart.defaults.plugins.legend.labels.boxWidth = 10;
+Chart.defaults.plugins.legend.labels.boxHeight = 10;
+Chart.defaults.plugins.legend.labels.usePointStyle = true;
+Chart.defaults.plugins.legend.labels.font = {family:"'Inter', sans-serif", size:11.5, weight:'500'};
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(17,20,28,0.95)';
+Chart.defaults.plugins.tooltip.titleColor = '#FFFFFF';
+Chart.defaults.plugins.tooltip.bodyColor = '#C7CDD9';
+Chart.defaults.plugins.tooltip.titleFont = {family:"'Inter', sans-serif", size:12, weight:'700'};
+Chart.defaults.plugins.tooltip.bodyFont = {family:"'Inter', sans-serif", size:11.5};
+Chart.defaults.plugins.tooltip.padding = 12;
+Chart.defaults.plugins.tooltip.cornerRadius = 10;
+Chart.defaults.plugins.tooltip.borderColor = 'rgba(255,255,255,0.1)';
+Chart.defaults.plugins.tooltip.borderWidth = 1;
+Chart.defaults.plugins.tooltip.displayColors = true;
+Chart.defaults.plugins.tooltip.boxPadding = 5;
 
 // ================= OVERVIEW RENDER =================
+function splitHalves(dateAgg){
+  if(dateAgg.length < 4) return null;
+  var mid = Math.floor(dateAgg.length/2);
+  return {first: dateAgg.slice(0, mid), second: dateAgg.slice(mid)};
+}
+function avgOf(arr, key){ return arr.length ? arr.reduce(function(a,d){return a+d[key];},0)/arr.length : 0; }
+function trendBadge(pct, invert){
+  if(pct===null || pct===undefined || !isFinite(pct)) return '';
+  var isUp = pct >= 0;
+  var good = invert ? !isUp : isUp;
+  var arrow = isUp ? '<path d="M12 19V5"/><path d="M5 12l7-7 7 7"/>' : '<path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/>';
+  return '<span class="k-trend '+(good?'up':'down')+'" title="vs first half of selected range"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">'+arrow+'</svg>'+Math.abs(pct).toFixed(1)+'%</span>';
+}
+
 function renderKPIs(recs){
   var byMachine = aggByMachine(recs);
   var totalQty = recs.reduce(function(a,r){return a+r.qty;},0);
@@ -783,6 +990,23 @@ function renderKPIs(recs){
   // latest day with any activity in filtered set
   var dateAgg = aggByDate(recs);
   var lastDay = dateAgg.length ? dateAgg[dateAgg.length-1] : {date:'-', qty:0};
+
+  // trend: first half vs second half of the selected date range (purely descriptive, not fabricated history)
+  var halves = splitHalves(dateAgg);
+  var qtyTrend = null, wtTrend = null, rejTrend = null, effTrend = null;
+  if(halves){
+    var fQ = avgOf(halves.first,'qty'), sQ = avgOf(halves.second,'qty');
+    if(fQ>0 && sQ>0) qtyTrend = (sQ-fQ)/fQ*100;
+    var fW = avgOf(halves.first,'wt'), sW = avgOf(halves.second,'wt');
+    if(fW>0 && sW>0) wtTrend = (sW-fW)/fW*100;
+    var fRej = avgOf(halves.first,'rejKg'), sRej = avgOf(halves.second,'rejKg');
+    if(fRej>0 && sRej>0) rejTrend = (sRej-fRej)/fRej*100;
+    var fWtSum = halves.first.reduce(function(a,d){return a+d.wt;},0), fRejSum = halves.first.reduce(function(a,d){return a+d.rejKg;},0);
+    var sWtSum = halves.second.reduce(function(a,d){return a+d.wt;},0), sRejSum = halves.second.reduce(function(a,d){return a+d.rejKg;},0);
+    if(fWtSum>0 && sWtSum>0){
+      effTrend = (100-safeDiv(sRejSum,sWtSum)*100) - (100-safeDiv(fRejSum,fWtSum)*100);
+    }
+  }
 
   var machineCount = uniq(recs.map(function(r){return r.machine;})).length;
   var opCount = uniq(recs.map(function(r){return r.operator;}).filter(Boolean)).length;
@@ -803,31 +1027,35 @@ function renderKPIs(recs){
   var worstRej = rejRanked[0] || {machine:'-',rejPct:0};
 
   var cards = [
-    {label:'Total Production', value:fmtInt(totalQty), unit:'units', sub:'Sum of Qty, filtered range', accent:'var(--amber)'},
-    {label:'Total Weight', value:fmtNum(totalWt,1), unit:'kg', sub:'Sum of Wt (Kg), filtered range', accent:'var(--blue)'},
-    {label:'Total Rejection', value:fmtNum(totalRej,1), unit:'kg', sub:'Sum of Rej (Kg), filtered range', accent:'var(--red)'},
-    {label:'Efficiency', value:fmtPct(effOverall), unit:'', sub:'1 &minus; (rejection kg / weight kg)', accent:'var(--green)'},
-    {label:"Today's Production", value:fmtInt(lastDay.qty), unit:'units', sub:'Latest logged date in range: '+lastDay.date, accent:'var(--amber)'},
-    {label:'Average Production', value:fmtInt(avgProdPerDay), unit:'units/day', sub:'Total Qty &divide; days in range ('+dayCount+')', accent:'var(--violet)'},
-    {label:'Machine Count', value:machineCount, unit:'', sub:'Distinct machines in filtered set', accent:'var(--blue)'},
-    {label:'Operator Count', value:opCount, unit:'', sub:'Distinct operators in filtered set', accent:'var(--blue)'},
-    {label:'Product Count', value:machineCount, unit:'', sub:'Each machine = one product line', accent:'var(--blue)'},
-    {label:'Monthly Production', value:fmtInt(monthlyTotalQty), unit:'units', sub:MONTH_LABEL+' full-month total (unfiltered)', accent:'var(--amber)'},
-    {label:'Daily Average', value:fmtNum(avgWtPerDay,1), unit:'kg/day', sub:'Total Wt &divide; days in range', accent:'var(--violet)'},
-    {label:'Top Machine', value:topMachine.machine, unit:'', sub:fmtInt(topMachine.qty)+' units produced', accent:'var(--amber)'},
-    {label:'Top Operator', value:topOperator.operator, unit:'', sub:fmtInt(topOperator.qty)+' units produced', accent:'var(--amber)'},
+    {label:'Total Production', value:fmtInt(totalQty), raw:totalQty, fmt:'int', unit:'units', sub:'Sum of Qty, filtered range', accent:'var(--primary)', trend:trendBadge(qtyTrend,false)},
+    {label:'Total Weight', value:fmtNum(totalWt,1), raw:totalWt, fmt:'num1', unit:'kg', sub:'Sum of Wt (Kg), filtered range', accent:'var(--blue)', trend:trendBadge(wtTrend,false)},
+    {label:'Total Rejection', value:fmtNum(totalRej,1), raw:totalRej, fmt:'num1', unit:'kg', sub:'Sum of Rej (Kg), filtered range', accent:'var(--red)', trend:trendBadge(rejTrend,true)},
+    {label:'Efficiency', value:fmtPct(effOverall), raw:effOverall, fmt:'pct', unit:'', sub:'1 &minus; (rejection kg / weight kg)', accent:'var(--green)', trend:trendBadge(effTrend,false)},
+    {label:"Today's Production", value:fmtInt(lastDay.qty), raw:lastDay.qty, fmt:'int', unit:'units', sub:'Latest logged date in range: '+lastDay.date, accent:'var(--primary)'},
+    {label:'Average Production', value:fmtInt(avgProdPerDay), raw:avgProdPerDay, fmt:'int', unit:'units/day', sub:'Total Qty &divide; days in range ('+dayCount+')', accent:'var(--violet)'},
+    {label:'Machine Count', value:machineCount, raw:machineCount, fmt:'int', unit:'', sub:'Distinct machines in filtered set', accent:'var(--blue)'},
+    {label:'Operator Count', value:opCount, raw:opCount, fmt:'int', unit:'', sub:'Distinct operators in filtered set', accent:'var(--blue)'},
+    {label:'Product Count', value:machineCount, raw:machineCount, fmt:'int', unit:'', sub:'Each machine = one product line', accent:'var(--blue)'},
+    {label:'Monthly Production', value:fmtInt(monthlyTotalQty), raw:monthlyTotalQty, fmt:'int', unit:'units', sub:MONTH_LABEL+' full-month total (unfiltered)', accent:'var(--primary)'},
+    {label:'Daily Average', value:fmtNum(avgWtPerDay,1), raw:avgWtPerDay, fmt:'num1', unit:'kg/day', sub:'Total Wt &divide; days in range', accent:'var(--violet)'},
+    {label:'Top Machine', value:topMachine.machine, unit:'', sub:fmtInt(topMachine.qty)+' units produced', accent:'var(--primary)'},
+    {label:'Top Operator', value:topOperator.operator, unit:'', sub:fmtInt(topOperator.qty)+' units produced', accent:'var(--primary)'},
     {label:'Best Efficiency', value:bestEff.machine, unit:'', sub:fmtPct(bestEff.eff)+' efficiency', accent:'var(--green)'},
     {label:'Worst Rejection', value:worstRej.machine, unit:'', sub:fmtPct(worstRej.rejPct)+' rejection', accent:'var(--red)'}
   ];
 
   var host = document.getElementById('kpiGrid');
-  host.innerHTML = cards.map(function(c){
-    return '<div class="kpi" style="--accent:'+c.accent+'">'+
-      '<div class="k-label">'+c.label+'</div>'+
-      '<div class="k-value">'+c.value+(c.unit?'<span class="k-unit">'+c.unit+'</span>':'')+'</div>'+
+  host.innerHTML = cards.map(function(c, idx){
+    var valueInner = c.raw!==undefined
+      ? '<span class="k-num">0</span>'+(c.unit?'<span class="k-unit">'+c.unit+'</span>':'')
+      : c.value+(c.unit?'<span class="k-unit">'+c.unit+'</span>':'');
+    return '<div class="kpi" style="--accent:'+c.accent+'; animation-delay:'+(idx*0.03)+'s">'+
+      '<div class="k-top"><div class="k-icon">'+iconSvg(c.label)+'</div><div class="k-label">'+c.label+'</div></div>'+
+      '<div class="k-value"'+(c.raw!==undefined?' data-raw="'+c.raw+'" data-fmt="'+c.fmt+'"':'')+'>'+valueInner+(c.trend||'')+'</div>'+
       '<div class="k-sub">'+c.sub+'</div>'+
     '</div>';
   }).join('');
+  host.querySelectorAll('.k-value[data-raw]').forEach(animateCount);
 }
 
 function renderMachineProdChart(recs){
@@ -842,7 +1070,7 @@ function renderMachineProdChart(recs){
     options:{
       indexAxis:'y', responsive:true, maintainAspectRatio:false,
       plugins:{legend:{display:false}, tooltip:{callbacks:{label:function(ctx){return ' '+fmtInt(ctx.parsed.x)+' units';}}}},
-      scales:{ x:{grid:{color:CHART_DEFAULTS.gridColor}, ticks:{font:{family:"'IBM Plex Mono', monospace",size:10.5}}}, y:{grid:{display:false}, ticks:{font:{family:"'IBM Plex Mono', monospace",size:11}}} }
+      scales:{ x:{grid:{color:CHART_DEFAULTS.gridColor}, ticks:{font:{family:"'Inter', sans-serif",size:10.5}}}, y:{grid:{display:false}, ticks:{font:{family:"'Inter', sans-serif",size:11}}} }
     }
   });
 }
@@ -867,7 +1095,7 @@ function renderDailyTrend(recs){
       datasets:[{ label:'Qty', data: agg.map(function(a){return a.qty;}), borderColor:'#f2a93b', backgroundColor:'rgba(242,169,59,0.12)', fill:true, tension:0.3, pointRadius:2 }] },
     options:{ responsive:true, maintainAspectRatio:false,
       plugins:{legend:{display:false}},
-      scales:{ x:{grid:{display:false}, ticks:{font:{family:"'IBM Plex Mono', monospace",size:10}}}, y:{grid:{color:CHART_DEFAULTS.gridColor}} }
+      scales:{ x:{grid:{display:false}, ticks:{font:{family:"'Inter', sans-serif",size:10}}}, y:{grid:{color:CHART_DEFAULTS.gridColor}} }
     }
   });
 }
@@ -880,7 +1108,7 @@ function renderRejTrend(recs){
       datasets:[{ label:'Rejection Kg', data: agg.map(function(a){return a.rejKg;}), borderColor:'#f0525c', backgroundColor:'rgba(240,82,92,0.12)', fill:true, tension:0.3, pointRadius:2 }] },
     options:{ responsive:true, maintainAspectRatio:false,
       plugins:{legend:{display:false}},
-      scales:{ x:{grid:{display:false}, ticks:{font:{family:"'IBM Plex Mono', monospace",size:10}}}, y:{grid:{color:CHART_DEFAULTS.gridColor}} }
+      scales:{ x:{grid:{display:false}, ticks:{font:{family:"'Inter', sans-serif",size:10}}}, y:{grid:{color:CHART_DEFAULTS.gridColor}} }
     }
   });
 }
@@ -973,7 +1201,11 @@ var machineRendered = {};
 function buildMachinePicker(){
   var host = document.getElementById('machinePicker');
   host.innerHTML = MACHINES.map(function(m,i){
-    return '<div class="machine-chip'+(i===0?' active':'')+'" data-machine="'+m+'">'+m+'</div>';
+    var latestRecs = ALL_RECORDS.filter(function(r){ return r.machine===m && r.date===MAX_DATE; });
+    var isRunning = latestRecs.some(function(r){ return r.qty > 0; });
+    return '<div class="machine-chip'+(i===0?' active':'')+'" data-machine="'+m+'">'+
+      '<span class="status-dot '+(isRunning?'running':'idle')+'" title="'+(isRunning?'Producing on latest logged date':'No output logged on latest date')+'"></span>'+m+
+    '</div>';
   }).join('');
   host.querySelectorAll('.machine-chip').forEach(function(chip){
     chip.addEventListener('click', function(){
@@ -1003,10 +1235,10 @@ function showMachineDetail(name){
   div.id = 'md-'+cssSafe(name);
   div.innerHTML =
     '<div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px;">'+
-      kpiHtml('Total Qty', fmtInt(agg.qty), 'units', 'var(--amber)')+
-      kpiHtml('Total Weight', fmtNum(agg.wt,1), 'kg', 'var(--blue)')+
-      kpiHtml('Total Rejection', fmtNum(agg.rejKg,1), 'kg', 'var(--red)')+
-      kpiHtml('Efficiency', fmtPct(agg.eff), '', 'var(--green)')+
+      kpiHtml('Total Qty', fmtInt(agg.qty), agg.qty, 'int', 'units', 'var(--primary)')+
+      kpiHtml('Total Weight', fmtNum(agg.wt,1), agg.wt, 'num1', 'kg', 'var(--blue)')+
+      kpiHtml('Total Rejection', fmtNum(agg.rejKg,1), agg.rejKg, 'num1', 'kg', 'var(--red)')+
+      kpiHtml('Efficiency', fmtPct(agg.eff), agg.eff, 'pct', '', 'var(--green)', agg.eff)+
     '</div>'+
     '<div class="grid-2">'+
       '<div class="panel"><h3>Daily Production &mdash; '+name+'</h3><div class="ph-note">Qty &amp; Weight per day, full month</div><div class="chart-box"><canvas id="mchart-'+cssSafe(name)+'"></canvas></div></div>'+
@@ -1021,6 +1253,7 @@ function showMachineDetail(name){
       '</tbody></table></div>'+
     '</div>';
   host.appendChild(div);
+  div.querySelectorAll('.k-value[data-raw]').forEach(animateCount);
 
   upsertChart('mchart-'+cssSafe(name), {
     type:'line',
@@ -1042,8 +1275,13 @@ function showMachineDetail(name){
     });
   }
 }
-function kpiHtml(label,val,unit,accent){
-  return '<div class="kpi" style="--accent:'+accent+'"><div class="k-label">'+label+'</div><div class="k-value">'+val+(unit?'<span class="k-unit">'+unit+'</span>':'')+'</div></div>';
+function kpiHtml(label,val,raw,fmt,unit,accent,progressPct){
+  var bar = (progressPct!==undefined) ? '<div class="progress-track"><div class="progress-fill" style="width:'+Math.max(0,Math.min(100,progressPct))+'%; background:linear-gradient(90deg,'+(progressPct>=95?'var(--green),var(--green)':progressPct>=85?'var(--amber),var(--green)':'var(--red),var(--amber)')+')"></div></div>' : '';
+  return '<div class="kpi" style="--accent:'+accent+'">'+
+    '<div class="k-top"><div class="k-icon">'+iconSvg(label)+'</div><div class="k-label">'+label+'</div></div>'+
+    '<div class="k-value" data-raw="'+raw+'" data-fmt="'+fmt+'"><span class="k-num">0</span>'+(unit?'<span class="k-unit">'+unit+'</span>':'')+'</div>'+
+    bar+
+  '</div>';
 }
 function cssSafe(s){ return s.replace(/[^a-zA-Z0-9]/g,'_'); }
 
@@ -1089,6 +1327,7 @@ function renderOperators(){
 
 // ================= DATA TABLE VIEW =================
 var dtSort = {key:'date', dir:1};
+var dtPage = 1;
 function renderDataTable(){
   var search = document.getElementById('dt-search').value.trim().toLowerCase();
   var recs = ALL_RECORDS.filter(function(r){
@@ -1101,12 +1340,23 @@ function renderDataTable(){
     if(typeof va === 'string'){ va=(va||'').toLowerCase(); vb=(vb||'').toLowerCase(); }
     if(va<vb) return -1*dtSort.dir; if(va>vb) return 1*dtSort.dir; return 0;
   });
+
+  var pageSize = parseInt(document.getElementById('dt-pagesize').value, 10) || 50;
+  var totalPages = Math.max(1, Math.ceil(recs.length / pageSize));
+  if(dtPage > totalPages) dtPage = totalPages;
+  if(dtPage < 1) dtPage = 1;
+  var startIdx = (dtPage - 1) * pageSize;
+  var pageRecs = recs.slice(startIdx, startIdx + pageSize);
+
   var tbody = document.querySelector('#rawTable tbody');
-  tbody.innerHTML = recs.map(function(r){
+  tbody.innerHTML = pageRecs.map(function(r){
     return '<tr><td>'+r.machine+'</td><td>'+r.shift+'</td><td>'+r.date+'</td><td>'+(r.operator||'&mdash;')+'</td><td>'+fmtInt(r.qty)+'</td><td>'+fmtNum(r.wt,1)+'</td><td>'+fmtNum(r.rejKg,1)+'</td><td>'+fmtPct(r.rejPct)+'</td></tr>';
   }).join('');
   document.getElementById('dt-count').textContent = recs.length;
   document.getElementById('dt-total').textContent = ALL_RECORDS.length;
+  document.getElementById('dt-pageinfo').textContent = 'Page '+dtPage+' of '+totalPages;
+  document.getElementById('dt-prev').disabled = dtPage <= 1;
+  document.getElementById('dt-next').disabled = dtPage >= totalPages;
   var totQty = recs.reduce(function(a,r){return a+r.qty;},0);
   var totWt = recs.reduce(function(a,r){return a+r.wt;},0);
   var totRej = recs.reduce(function(a,r){return a+r.rejKg;},0);
@@ -1124,8 +1374,11 @@ document.querySelectorAll('#rawTable thead th').forEach(function(th){
     renderDataTable();
   });
 });
-document.getElementById('dt-search').addEventListener('input', renderDataTable);
-document.getElementById('dt-reset').addEventListener('click', function(){ document.getElementById('dt-search').value=''; renderDataTable(); });
+document.getElementById('dt-search').addEventListener('input', function(){ dtPage=1; renderDataTable(); });
+document.getElementById('dt-reset').addEventListener('click', function(){ document.getElementById('dt-search').value=''; dtPage=1; renderDataTable(); });
+document.getElementById('dt-pagesize').addEventListener('change', function(){ dtPage=1; renderDataTable(); });
+document.getElementById('dt-prev').addEventListener('click', function(){ dtPage--; renderDataTable(); });
+document.getElementById('dt-next').addEventListener('click', function(){ dtPage++; renderDataTable(); });
 
 // ================= NAV & FILTER WIRING =================
 document.querySelectorAll('#mainNav button').forEach(function(btn){
@@ -1155,6 +1408,24 @@ function tickClock(){
   document.getElementById('liveClock').textContent = now.toLocaleTimeString('en-GB', {hour12:false});
 }
 setInterval(tickClock, 1000); tickClock();
+
+var hdrTodayEl = document.getElementById('hdrToday');
+if(hdrTodayEl) hdrTodayEl.textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
+
+// ================= RIPPLE MICRO-INTERACTION =================
+document.addEventListener('click', function(e){
+  var t = e.target.closest('.btn, .nav button, .machine-chip, .msel-btn');
+  if(!t || t.disabled) return;
+  var rect = t.getBoundingClientRect();
+  var size = Math.max(rect.width, rect.height);
+  var ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+  ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+  t.appendChild(ripple);
+  setTimeout(function(){ ripple.remove(); }, 650);
+});
 
 // ================= DATA APPLY (called on every load / refresh) =================
 function applyData(records){
@@ -1204,7 +1475,7 @@ var isLoading = false;
 function setLoadingState(loading){
   var btn = document.getElementById('btnRefresh');
   if(!btn) return;
-  btn.textContent = loading ? 'Refreshing\u2026' : 'Refresh';
+  btn.innerHTML = loading ? '<span class="spinner"></span> Refreshing\u2026' : 'Refresh';
   btn.disabled = loading;
 }
 function setErrorState(msg){
@@ -1212,6 +1483,22 @@ function setErrorState(msg){
   if(!el) return;
   if(msg){ el.style.display = 'inline-flex'; el.textContent = 'Fetch failed: ' + msg; }
   else { el.style.display = 'none'; el.textContent = ''; }
+}
+function setConnectionState(state){
+  var pill = document.getElementById('pillConnection');
+  var label = document.getElementById('hdrConnection');
+  var dot = pill ? pill.querySelector('.dot') : null;
+  if(!pill || !label) return;
+  if(state === 'connected'){
+    label.textContent = 'Sheets Connected';
+    if(dot){ dot.style.background = 'var(--green)'; dot.style.boxShadow = '0 0 8px var(--green)'; }
+  } else if(state === 'connecting'){
+    label.textContent = 'Connecting\u2026';
+    if(dot){ dot.style.background = 'var(--amber)'; dot.style.boxShadow = '0 0 8px var(--amber)'; }
+  } else {
+    label.textContent = 'Connection Failed';
+    if(dot){ dot.style.background = 'var(--red)'; dot.style.boxShadow = '0 0 8px var(--red)'; }
+  }
 }
 function setLastUpdated(date){
   var el = document.getElementById('lastUpdated');
@@ -1222,14 +1509,17 @@ async function refreshData(){
   if(isLoading) return;
   isLoading = true;
   setLoadingState(true);
+  if(!ALL_RECORDS.length) setConnectionState('connecting');
   try{
     var records = await fetchCSVData();
     applyData(records);
     setErrorState(null);
+    setConnectionState('connected');
     setLastUpdated(new Date());
   } catch(err){
     console.error('CSV refresh failed:', err);
     setErrorState(err && err.message ? err.message : String(err));
+    setConnectionState('error');
   } finally {
     isLoading = false;
     setLoadingState(false);
