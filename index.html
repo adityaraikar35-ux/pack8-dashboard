@@ -538,7 +538,9 @@ html.dept-stores #btnRefresh,html.dept-stores .fab-filter .filter-badge{display:
 .st-badge{display:inline-flex;gap:4px;align-items:center;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;margin-top:5px}
 .st-badge.ok{color:#047857;border:1px solid #10b981}
 .st-badge.bad{color:#b91c1c;border:1px solid #ef4444}
-.st-yday{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.st-yday{display:block}
+.st-ysec h4{margin:4px 0 8px 2px;font-size:11.5px;letter-spacing:.8px;text-transform:uppercase;color:#2563eb}
+.st-ysec .kpi-grid{margin-bottom:14px}
 .st-yg{padding:14px 16px}
 .st-yg h4{margin:0 0 6px;font-size:11.5px;letter-spacing:.8px;text-transform:uppercase;color:#2563eb}
 .st-yr{display:grid;grid-template-columns:1fr auto;gap:1px 10px;padding:8px 0;border-top:1px solid var(--line-soft)}
@@ -2948,7 +2950,7 @@ function kpi(icon,accent,label,val,unit,sub,bad,badge){
   return '<div class="kpi'+(bad?' st-bad':'')+'" style="--accent:'+(bad?'#ef4444':accent)+'"><div class="k-top"><div class="k-icon">'+icon+'</div></div>'+
     '<div class="k-label">'+label+'</div><div class="k-value">'+val+(unit?'<span class="k-unit">'+unit+'</span>':'')+'</div>'+
     (sub?'<div class="k-sub">'+sub+'</div>':'')+
-    (badge?'<span class="st-badge '+(bad?'bad':'ok')+'">'+(bad?'▲ ':'✓ ')+badge+'</span>':'')+'</div>';
+    '</div>';
 }
 function renderKpis(M){
   var v=M.val, g=function(k){ return agg(k,v[k]); };
@@ -2971,32 +2973,33 @@ function renderKpis(M){
   ].join('');
 }
 
+var ICONS={VEH_REPORTED:'&#128666;',VEH_UNLOADED:'&#128667;',PAPER_UNLOADED:'&#128220;',GATE_PENDING:'&#128679;',MAT_SHORTAGE:'&#9888;',
+  GRN_BOOKED:'&#9989;',GRN_PENDING:'&#9203;',KRAFT_CONS:'&#129531;',HOT_GLUE:'&#128293;',COLD_GLUE:'&#10052;',RELEASE_PAPER:'&#128196;',INK:'&#127912;',
+  SCRAP_GEN:'&#9851;',SCRAP_SOLD:'&#128176;',SCRAP_SOLD_2:'&#128176;',REEL_STOCK:'&#128230;',SCRAP_STOCK:'&#128465;',DIESEL_STOCK:'&#9981;'};
+var SEC_ACCENT={'Vehicles & GRN':'#2563eb','Consumption':'#7c3aed','Scrap':'#14b8a6','Stock':'#4f46e5'};
 function renderYday(M,di){
   if(di===null){ $('st-ydaytitle').textContent='Day view'; $('st-yday').innerHTML='<div class="empty-msg">Ya mahinyat data nahi.</div>'; return; }
   var d=M.dates[di], y=new Date(); y.setDate(y.getDate()-1);
   $('st-ydaytitle').textContent=(d===isoLocal(y)?'Yesterday · ':'Day · ')+dayLabel(d);
-  // working day = some daily (non-stock) metric is non-zero → Sundays/holidays skipped for "vs prev"
+  // working day = some daily (non-stock) metric is non-zero -> Sundays/holidays skipped for "vs prev"
   var work=M.dates.map(function(_,j){ return Object.keys(M.val).some(function(k){ return !(META[k]&&META[k].agg==='LAST') && M.val[k][j]; }); });
   var SG=sortedSections(), html='';
   SG.secs.forEach(function(s){
-    html+='<div class="panel st-yg"><h4>'+esc(s)+'</h4>';
+    var acc=SEC_ACCENT[s]||'#2563eb', cards=[];
     SG.groups[s].forEach(function(k){
-      var arr=M.val[k], v=arr[di], inf=INFO[k], prev=null, j;
-      for(j=di-1;j>=0;j--){ if(work[j] && arr[j]!==null){ prev=arr[j]; break; } }
-      var isLast=META[k]&&META[k].agg==='LAST', mtd=agg(k,arr.slice(0,di+1)), delta='';
-      if(v!==null && prev!==null){ var dd=v-prev; delta = dd===0?'= same as prev working day':(dd>0?'▲ ':'▼ ')+fmt(Math.abs(dd))+' vs prev working day'; }
-      var bad=breach(k,v);
-      html+='<div class="st-yr'+(bad?' bad':'')+'"><div class="m">'+esc(inf.metric)+(bad?' ⚠':'')+'</div>'+
-        '<div class="v">'+(v===null?'–':fmt(v))+'<small>'+esc(inf.unit)+'</small></div>'+
-        '<div class="d"><span>'+(isLast?'':'MTD '+fmt(mtd))+'</span><span>'+delta+'</span></div></div>';
+      var a=M.val[k], v=a[di], inf=INFO[k], prev=null, j;
+      for(j=di-1;j>=0;j--){ if(work[j] && a[j]!==null){ prev=a[j]; break; } }
+      var isLast=META[k]&&META[k].agg==='LAST', mtd=agg(k,a.slice(0,di+1)), delta='';
+      if(v!==null && prev!==null){ var dd=v-prev; delta = dd===0?'= same as prev day':(dd>0?'▲ ':'▼ ')+fmt(Math.abs(dd))+' vs prev day'; }
+      var sub=(isLast?(s==='Stock'?'closing stock':'pending count'):'MTD '+fmt(mtd)+' '+esc(inf.unit))+(delta?'<br>'+delta:'');
+      cards.push(kpi(ICONS[k]||'&#9679;',acc,esc(inf.metric),v===null?null:fmt(v),esc(inf.unit),sub,breach(k,v)));
     });
     if(s==='Scrap' && M.val.KRAFT_CONS){
       var gn=M.val.SCRAP_GEN?M.val.SCRAP_GEN[di]:null, kc=M.val.KRAFT_CONS[di], r=(gn!==null&&gn!==undefined&&kc)? gn/kc : null;
       var mt=baleOf((M.val.SCRAP_GEN||[]).slice(0,di+1),M.val.KRAFT_CONS.slice(0,di+1));
-      html+='<div class="st-yr'+(r!==null&&r>BALE_TARGET?' bad':'')+'"><div class="m">Bale Wastage %</div><div class="v">'+fmt(r,'%')+'</div>'+
-        '<div class="d"><span>MTD '+fmt(mt,'%')+'</span><span>target &lt; 12%</span></div></div>';
+      cards.push(kpi('&#128202;',acc,'Bale Wastage %',r===null?null:fmt(r,'%'),'','MTD '+fmt(mt,'%'),r!==null&&r>BALE_TARGET));
     }
-    html+='</div>';
+    html+='<div class="st-ysec"><h4>'+esc(s)+'</h4><div class="kpi-grid">'+cards.join('')+'</div></div>';
   });
   $('st-yday').innerHTML=html;
 }
