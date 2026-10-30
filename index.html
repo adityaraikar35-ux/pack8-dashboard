@@ -539,6 +539,13 @@ html.dept-stores #btnRefresh,html.dept-stores .fab-filter .filter-badge{display:
 .st-badge.ok{color:#047857;border:1px solid #10b981}
 .st-badge.bad{color:#b91c1c;border:1px solid #ef4444}
 .st-yday{display:block}
+.st-chk{margin:18px 0 6px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.st-chk summary{cursor:pointer;padding:11px 14px;font-weight:700;font-size:13px;color:var(--text-1);list-style:none}
+.st-chk summary::-webkit-details-marker{display:none}
+.st-chk summary .w{color:#b45309}
+.st-chk .bd{padding:0 14px 14px;font-size:12.5px;color:var(--text-1);line-height:1.6}
+.st-chk table{font-size:12px}.st-chk td,.st-chk th{padding:6px 10px!important}
+.st-chk .bad{color:#b91c1c;font-weight:700}.st-chk .ok{color:#047857;font-weight:700}
 .st-ysec h4{margin:4px 0 8px 2px;font-size:11.5px;letter-spacing:.8px;text-transform:uppercase;color:#2563eb}
 .st-ysec .kpi-grid{margin-bottom:14px}
 .st-yg{padding:14px 16px}
@@ -890,6 +897,7 @@ html.dept-stores #btnRefresh,html.dept-stores .fab-filter .filter-badge{display:
 
         <div class="st-sec" id="st-sec-reg"><h3>Monthly Register</h3><small>same as the sheet &middot; red = target crossed</small></div>
         <div class="panel" style="padding:8px"><div class="table-wrap" style="max-height:620px;border:0" id="st-table"></div></div>
+        <details class="st-chk" id="st-chk"><summary id="st-chksum">&#128269; Data check</summary><div class="bd" id="st-chkbody"></div></details>
         <div class="ph-note" style="margin-top:12px">Data: Google Sheet &ldquo;Store_Feed&rdquo; (published CSV) &middot; refreshes every 5 minutes.</div>
       </div>
 
@@ -2816,7 +2824,7 @@ var SECTION_ORDER = ['Vehicles & GRN','Consumption','Scrap','Stock'];
 var S = ['#2a78d6','#eb6834','#1baf7a','#eda100'];   // validated categorical order
 var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-var ROWS = [], INFO = {}, stCharts = {}, loaded = false, loading = false;
+var ROWS = [], INFO = {}, CHK = null, stCharts = {}, loaded = false, loading = false;
 function $(id){ return document.getElementById(id); }
 function pad(n){ return String(n).padStart(2,'0'); }
 function isoLocal(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
@@ -2851,14 +2859,47 @@ function parseCSV(text){
   if(f!==''||row.length){ row.push(f); rows.push(row); }
   return rows;
 }
+// Dates: yyyy-mm-dd, dd/mm/yyyy or mm/dd/yyyy (auto-detected for the whole sheet), 29-Oct-2026, 29 Oct 26, Oct 29 2026, serial numbers
+var DMY = true;
+function monIdx(t){ return MON.map(function(x){return x.toLowerCase();}).indexOf(String(t).slice(0,3).toLowerCase()); }
+function yr(y){ y=+y; return y<100 ? 2000+y : y; }
+function okDate(y,mo,d){ return mo>=1&&mo<=12&&d>=1&&d<=31 ? y+'-'+pad(mo)+'-'+pad(d) : ''; }
 function normDate(s){
-  s=String(s||'').trim(); var m;
-  if((m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) return m[1]+'-'+pad(m[2])+'-'+pad(m[3]);
-  if((m=s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})/))) return m[3]+'-'+pad(m[2])+'-'+pad(m[1]);
-  if((m=s.match(/^(\d{1,2})-([A-Za-z]{3})-(\d{4})/))){ var i=MON.map(function(x){return x.toLowerCase();}).indexOf(m[2].toLowerCase()); if(i>=0) return m[3]+'-'+pad(i+1)+'-'+pad(m[1]); }
+  s=String(s||'').trim().replace(/^[A-Za-z]{3,9},?\s+(?=\d)/,''); var m, i;
+  if(!s) return '';
+  if((m=s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/))) return okDate(+m[1],+m[2],+m[3]);
+  if((m=s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{2,4})/))) return DMY ? okDate(yr(m[3]),+m[2],+m[1]) : okDate(yr(m[3]),+m[1],+m[2]);
+  if((m=s.match(/^(\d{1,2})[-\/. ]+([A-Za-z]{3,})\.?[-\/. ,]+(\d{2,4})/))){ i=monIdx(m[2]); if(i>=0) return okDate(yr(m[3]),i+1,+m[1]); }
+  if((m=s.match(/^([A-Za-z]{3,})\.?[ -](\d{1,2}),?[ -](\d{2,4})/))){ i=monIdx(m[1]); if(i>=0) return okDate(yr(m[3]),i+1,+m[2]); }
+  if(/^\d{5}(\.\d+)?$/.test(s)){ var d=new Date(Date.UTC(1899,11,30)+Math.floor(+s)*86400000); return okDate(d.getUTCFullYear(),d.getUTCMonth()+1,d.getUTCDate()); }
   return '';
 }
-function num(v){ var n=parseFloat(String(v==null?'':v).replace(/,/g,'').trim()); return isNaN(n)?null:n; }
+function detectDMY(vals){
+  var dmy=0, mdy=0;
+  vals.forEach(function(v){ var m=String(v||'').trim().match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.]\d{2,4}/); if(!m) return; if(+m[1]>12) dmy++; else if(+m[2]>12) mdy++; });
+  return mdy>dmy ? false : true;
+}
+// Numbers: "1,23,456", "12500 kg", "Rs 500", "(500)" -> -500; text like "-", "NA", "Nil" -> no value
+function num(v){
+  var t=String(v==null?'':v).trim(); if(!t) return null;
+  var neg=/^\(.*\)$/.test(t);
+  t=t.replace(/,/g,'').replace(/[^0-9.\-]/g,' ').trim().split(/\s+/)[0];
+  if(!t || t==='-' || t==='.') return null;
+  var n=parseFloat(t); if(isNaN(n)) return null;
+  return neg ? -Math.abs(n) : n;
+}
+// Keys: case/space tolerant, with aliases so a renamed key or a metric name still maps to the dashboard's key
+var KEY_ALIAS = {
+  PAPER_UNLOAD:'PAPER_UNLOADED', PAPER_UNLOADING:'PAPER_UNLOADED', PAPER_RECEIVED:'PAPER_UNLOADED', REEL_UNLOADED:'PAPER_UNLOADED', KRAFT_UNLOADED:'PAPER_UNLOADED', PAPER_INWARD:'PAPER_UNLOADED',
+  VEHICLE_REPORTED:'VEH_REPORTED', VEHICLES_REPORTED:'VEH_REPORTED', VEHICLE_UNLOADED:'VEH_UNLOADED', VEHICLES_UNLOADED:'VEH_UNLOADED',
+  GATE_ENTRY_PENDING:'GATE_PENDING', MATERIAL_SHORTAGE:'MAT_SHORTAGE', KRAFT_CONSUMPTION:'KRAFT_CONS', HOT_GLUE_CONSUMPTION:'HOT_GLUE', COLD_GLUE_CONSUMPTION:'COLD_GLUE',
+  INK_CONSUMPTION:'INK', RELEASE_PAPER_CONSUMPTION:'RELEASE_PAPER', SCRAP_GENERATED:'SCRAP_GEN', SCRAP_GENERATION:'SCRAP_GEN', REEL_STOCK_KG:'REEL_STOCK', DIESEL:'DIESEL_STOCK'
+};
+function normKey(k, metric){
+  var t=String(k||'').trim().toUpperCase().replace(/[^A-Z0-9]+/g,'_').replace(/^_|_$/g,'');
+  if(!t && metric) t=String(metric).trim().toUpperCase().replace(/\(.*?\)/g,'').replace(/[^A-Z0-9]+/g,'_').replace(/^_|_$/g,'');
+  return KEY_ALIAS[t] || t;
+}
 
 function load(){
   if(loading) return; loading=true;
@@ -2866,26 +2907,35 @@ function load(){
   var url = STORE_CSV_URL + (STORE_CSV_URL.indexOf('?')>-1?'&':'?') + '_ts=' + Date.now();
   fetch(url,{cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })
   .then(function(text){
-    var t=parseCSV(text); if(!t.length) throw new Error('CSV rikama ahe');
+    var t=parseCSV(text); if(!t.length) throw new Error('CSV is empty');
     var h=t[0].map(function(x){return x.trim().toLowerCase();});
     var ix=function(n){ return h.indexOf(n); };
     var iD=ix('date'), iK=ix('key'), iS=ix('section'), iM=ix('metric'), iU=ix('unit'), iV=ix('value');
-    if(iD<0||iK<0||iV<0) throw new Error('Date / Key / Value columns sapadle nahit');
-    var rows=[], info={};
+    if(iD<0||iK<0||iV<0) throw new Error('Date / Key / Value columns not found');
+    var rows=[], info={}, chk={total:0, badDate:0, noKey:0, perKey:{}, badDateEx:[], textEx:{}};
+    DMY = detectDMY(t.slice(1).map(function(a){ return a[iD]; }));
     for(var r=1;r<t.length;r++){
-      var a=t[r]; var key=String(a[iK]||'').trim(), date=normDate(a[iD]), v=num(a[iV]);
-      if(!key||!date||v===null) continue;
+      var a=t[r]; if(!a || a.every(function(c){ return String(c||'').trim()===''; })) continue;
+      chk.total++;
+      var key=normKey(a[iK], iM>-1?a[iM]:''), date=normDate(a[iD]), raw=String(a[iV]==null?'':a[iV]).trim(), v=num(raw);
+      if(!key){ chk.noKey++; continue; }
+      var pk=chk.perKey[key]||(chk.perKey[key]={rows:0,vals:0,blank:0,text:0,last:''});
+      pk.rows++;
+      if(!date){ chk.badDate++; if(chk.badDateEx.length<5) chk.badDateEx.push(String(a[iD])); continue; }
+      if(!info[key]) info[key]={section:String(a[iS]||'Other').trim()||'Other',metric:String(iM>-1&&a[iM]?a[iM]:key).trim(),unit:String(iU>-1?a[iU]||'':'').trim(),order:Object.keys(info).length};
+      if(v===null){ if(raw && !/^(-|na|n\/a|nil|none)$/i.test(raw)){ pk.text++; if(!chk.textEx[key]) chk.textEx[key]=raw; } else pk.blank++; continue; }
+      pk.vals++; if(date>pk.last) pk.last=date;
       rows.push({date:date,month:date.slice(0,7),key:key,value:v});
-      if(!info[key]) info[key]={section:String(a[iS]||'Other').trim(),metric:String(a[iM]||key).trim(),unit:String(a[iU]||'').trim(),order:Object.keys(info).length};
     }
-    if(!rows.length) throw new Error('Store_Feed madhe data nahi');
+    CHK=chk;
+    if(!rows.length) throw new Error('No data in Store_Feed');
     ROWS=rows; INFO=info; loaded=true;
     $('st-err').style.display='none';
     $('st-upd').textContent='Updated '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
     setupControls(); render();
   }).catch(function(e){
     $('st-err').style.display='block';
-    $('st-err').textContent='⚠️ Stores data load zala nahi: '+e.message+'. Store_Feed "Publish to web → CSV" ahe ka check kara.';
+    $('st-err').textContent='⚠️ Stores data could not be loaded: '+e.message+'. Check that Store_Feed is published to the web as CSV.';
     $('st-upd').textContent='Load failed';
   }).then(function(){ loading=false; });
 }
@@ -2942,7 +2992,7 @@ function render(){
   var day=$('st-day').value, di=(day && day.slice(0,7)===M.m)? +day.slice(8,10)-1 : null;
   $('st-sub').textContent='Vehicles, GRN, consumption, scrap & stock · '+monthLabel(M.m);
   $('st-monthlbl').textContent=monthLabel(M.m)+(di!==null?' · up to '+dayLabel(M.dates[di]):'');
-  renderKpis(M); renderYday(M,di); renderCharts(M); renderTable(M);
+  renderKpis(M); renderYday(M,di); renderCharts(M); renderTable(M); renderCheck(M);
 }
 
 function kpi(icon,accent,label,val,unit,sub,bad,badge){
@@ -2978,7 +3028,7 @@ var ICONS={VEH_REPORTED:'&#128666;',VEH_UNLOADED:'&#128667;',PAPER_UNLOADED:'&#1
   SCRAP_GEN:'&#9851;',SCRAP_SOLD:'&#128176;',SCRAP_SOLD_2:'&#128176;',REEL_STOCK:'&#128230;',SCRAP_STOCK:'&#128465;',DIESEL_STOCK:'&#9981;'};
 var SEC_ACCENT={'Vehicles & GRN':'#2563eb','Consumption':'#7c3aed','Scrap':'#14b8a6','Stock':'#4f46e5'};
 function renderYday(M,di){
-  if(di===null){ $('st-ydaytitle').textContent='Day view'; $('st-yday').innerHTML='<div class="empty-msg">Ya mahinyat data nahi.</div>'; return; }
+  if(di===null){ $('st-ydaytitle').textContent='Day view'; $('st-yday').innerHTML='<div class="empty-msg">No data for this month.</div>'; return; }
   var d=M.dates[di], y=new Date(); y.setDate(y.getDate()-1);
   $('st-ydaytitle').textContent=(d===isoLocal(y)?'Yesterday · ':'Day · ')+dayLabel(d);
   // working day = some daily (non-stock) metric is non-zero -> Sundays/holidays skipped for "vs prev"
@@ -3002,6 +3052,27 @@ function renderYday(M,di){
     html+='<div class="st-ysec"><h4>'+esc(s)+'</h4><div class="kpi-grid">'+cards.join('')+'</div></div>';
   });
   $('st-yday').innerHTML=html;
+}
+
+/* ---------- data check: why a metric shows "–" ---------- */
+function renderCheck(M){
+  if(!CHK) return;
+  var expected=Object.keys(META), keys=expected.concat(Object.keys(CHK.perKey).filter(function(k){ return expected.indexOf(k)<0; }));
+  var issues=0;
+  var rowsH=keys.map(function(k){
+    var pk=CHK.perKey[k], inMonth=(M.val[k]||[]).filter(function(v){ return v!==null; }).length, note, cls='ok';
+    if(!pk){ note='Key not found in Store_Feed'; cls='bad'; issues++; }
+    else if(!pk.vals){ note=pk.text?('Value is text, not a number (e.g. "'+esc(CHK.textEx[k])+'")'):'All values blank'; cls='bad'; issues++; }
+    else if(!inMonth){ note='No value in '+monthLabel(M.m)+' (last value '+dayLabel(pk.last)+' '+pk.last.slice(0,4)+')'; cls='bad'; issues++; }
+    else note=inMonth+' day(s) in '+monthLabel(M.m)+(pk.text?' · '+pk.text+' text value(s) skipped':'');
+    return '<tr><td>'+esc(INFO[k]?INFO[k].metric:k)+'</td><td style="font-family:var(--mono)">'+esc(k)+'</td><td>'+(pk?pk.vals:0)+'</td><td class="'+cls+'">'+note+'</td></tr>';
+  }).join('');
+  if(CHK.badDate) issues++;
+  $('st-chksum').innerHTML='&#128269; Data check &mdash; '+CHK.total+' rows read'+(issues?' · <span class="w">'+issues+' item(s) need attention</span>':' · all OK');
+  $('st-chkbody').innerHTML='<p>Date format detected: <b>'+(DMY?'DD/MM/YYYY':'MM/DD/YYYY')+'</b>'+
+    (CHK.badDate?' · <span class="bad">'+CHK.badDate+' row(s) with unreadable date</span> (e.g. '+CHK.badDateEx.map(esc).join(', ')+')':'')+
+    (CHK.noKey?' · '+CHK.noKey+' row(s) without key':'')+'</p>'+
+    '<div class="table-wrap"><table><thead><tr><th>Metric</th><th>Key</th><th>Values</th><th>Status</th></tr></thead><tbody>'+rowsH+'</tbody></table></div>';
 }
 
 /* ---------- charts: one y-axis each, thin marks, hover tooltips ---------- */
