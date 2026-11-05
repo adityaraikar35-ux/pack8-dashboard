@@ -1268,6 +1268,9 @@ function normalizeDate(v){
   if(!s) return null;
   var m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
   if(m) return m[1]+'-'+pad2(m[2])+'-'+pad2(m[3]);
+  // d-Mon-yy / d-Mon-yyyy (e.g. 2-Jul-26, 1-Nov-2026) – parsed here because Safari/iPhone cannot parse it with new Date()
+  m = s.match(/^(\d{1,2})[-\s\/]([A-Za-z]{3})[A-Za-z]*[-\s\/,]+(\d{2}|\d{4})$/);
+  if(m){ var mi = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(m[2].toLowerCase()); if(mi>-1){ var yy = m[3].length===2 ? '20'+m[3] : m[3]; return yy+'-'+pad2(mi+1)+'-'+pad2(m[1]); } }
   m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
   if(m){ if(+m[1] > 12) return m[3]+'-'+pad2(m[2])+'-'+pad2(m[1]); /* D/M/YYYY */ return m[3]+'-'+pad2(m[1])+'-'+pad2(m[2]); /* M/D/YYYY default */ }
   var d = new Date(s);
