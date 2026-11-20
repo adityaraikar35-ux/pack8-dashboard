@@ -718,7 +718,7 @@ html,body{background:var(--a-bg);color:var(--a-ink);letter-spacing:-.01em}
 .st-head p,.st-head label{color:var(--a-ink3)!important}
 .st-head select,.st-head input{background:rgba(255,255,255,.1)!important;border:1px solid rgba(255,255,255,.18)!important;color:#fff!important;color-scheme:dark;border-radius:10px!important}
 .st-head .btn,.st-head button{background:var(--a-blue)!important;color:#fff!important;border-color:var(--a-blue)!important;border-radius:980px!important}
-.wb-art{right:240px;bottom:-10px;width:250px;height:132px;filter:drop-shadow(0 18px 24px rgba(0,0,0,.45))}
+.wb-art{right:240px;bottom:4px;width:250px;height:132px;filter:drop-shadow(0 18px 24px rgba(0,0,0,.45))}
 @media(max-width:960px){.welcome-banner{padding:26px 22px;min-height:0}.welcome-banner h2{font-size:30px}.welcome-banner p{font-size:15px}.st-head h2{font-size:24px}.wb-art{right:-30px;width:170px;opacity:.45}}
 
 /* ---------- cards ---------- */
@@ -963,27 +963,42 @@ html.reveal body{background:#f5f5f7}
 
       <div class="welcome-banner">
         <div class="wb-art" aria-hidden="true"><svg viewBox="0 0 240 128" width="100%" height="100%">
-  <defs><linearGradient id="kraftF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d7ad7e"/><stop offset="1" stop-color="#c1915f"/></linearGradient>
-  <linearGradient id="kraftS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b07f4f"/><stop offset="1" stop-color="#9a6d42"/></linearGradient></defs>
-  <path class="leaf" d="M18 30c10-10 22-8 26 0-10 8-20 8-26 0z" fill="rgba(255,255,255,.35)"/>
-  <path class="leaf" style="animation-delay:-3s" d="M210 18c8-8 18-6 21 0-8 6-16 6-21 0z" fill="rgba(255,255,255,.28)"/>
-  <g class="bob b2"><g transform="translate(118,40)">
-    <path d="M14 16 C14 0 36 0 36 16" fill="none" stroke="#7a5230" stroke-width="3" stroke-linecap="round"/>
-    <path d="M50 14 l12 7 v66 l-12 -4z" fill="url(#kraftS)"/><rect x="0" y="14" width="50" height="73" rx="2" fill="url(#kraftF)"/>
-    <rect x="0" y="14" width="50" height="6" fill="#b98a59"/><path d="M0 87 h50 l12 -4" fill="none" stroke="#9a6d42" stroke-width="1"/>
+  <defs>
+    <linearGradient id="kraftF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8ae80"/><stop offset="1" stop-color="#c39262"/></linearGradient>
+    <linearGradient id="kraftT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c6955f"/><stop offset="1" stop-color="#b78553"/></linearGradient>
+    <linearGradient id="whiteF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e9edf2"/></linearGradient>
+  </defs>
+  <!-- back: kraft courier bag -->
+  <g class="bob b2"><g transform="translate(26,30) rotate(-12 55 40)">
+    <rect x="0" y="0" width="110" height="78" rx="3" fill="url(#kraftF)"/>
+    <rect x="0" y="0" width="110" height="15" rx="3" fill="url(#kraftT)"/>
+    <line x1="0" y1="15" x2="110" y2="15" stroke="#9e7146" stroke-width="1"/>
+    <rect x="8" y="5" width="94" height="5" rx="2" fill="#efe2cf" opacity=".9"/>
+    <rect x="62" y="30" width="38" height="24" rx="2" fill="#f7efe3"/>
+    <line x1="66" y1="37" x2="96" y2="37" stroke="#c9b597" stroke-width="1.5"/><line x1="66" y1="42" x2="90" y2="42" stroke="#c9b597" stroke-width="1.5"/><line x1="66" y1="47" x2="94" y2="47" stroke="#c9b597" stroke-width="1.5"/>
   </g></g>
-  <g class="bob"><g transform="translate(52,22)">
-    <path d="M16 18 C16 -2 44 -2 44 18" fill="none" stroke="#7a5230" stroke-width="3.4" stroke-linecap="round"/>
-    <path d="M60 16 l15 8 v80 l-15 -5z" fill="#e3ece5"/><rect x="0" y="16" width="60" height="88" rx="2" fill="#fbfdfb"/>
-    <rect x="0" y="16" width="60" height="7" fill="#eef3ef"/>
-    <rect x="9" y="48" width="42" height="20" rx="4" fill="#0071e3"/><text x="30" y="62" text-anchor="middle" font-family="-apple-system,Helvetica Neue,Arial,sans-serif" font-size="10" font-weight="800" fill="#fff">PACK8</text>
-    <path d="M14 80 q16 8 32 0" fill="none" stroke="#9ec9ff" stroke-width="2.4" stroke-linecap="round"/>
+  <!-- middle: white PACK8 courier bag -->
+  <g class="bob"><g transform="translate(70,20) rotate(5 60 44)">
+    <rect x="0" y="0" width="120" height="86" rx="3" fill="url(#whiteF)"/>
+    <rect x="0" y="0" width="120" height="16" rx="3" fill="#dfe5ec"/>
+    <line x1="0" y1="16" x2="120" y2="16" stroke="#c3ccd6" stroke-width="1"/>
+    <rect x="8" y="5" width="104" height="6" rx="2" fill="#0071e3" opacity=".9"/>
+    <text x="16" y="44" font-family="-apple-system,Helvetica Neue,Arial,sans-serif" font-size="15" font-weight="800" fill="#1d1d1f">pack8</text>
+    <text x="16" y="56" font-family="-apple-system,Helvetica Neue,Arial,sans-serif" font-size="6.5" font-weight="600" fill="#6e6e73">COURIER BAG</text>
+    <rect x="70" y="30" width="40" height="28" rx="2" fill="#fff" stroke="#d2d2d7"/>
+    <g stroke="#1d1d1f" stroke-width="1.2"><line x1="74" y1="50" x2="74" y2="55"/><line x1="77" y1="50" x2="77" y2="55"/><line x1="79" y1="50" x2="79" y2="55"/><line x1="83" y1="50" x2="83" y2="55"/><line x1="86" y1="50" x2="86" y2="55"/><line x1="88" y1="50" x2="88" y2="55"/><line x1="92" y1="50" x2="92" y2="55"/><line x1="95" y1="50" x2="95" y2="55"/><line x1="98" y1="50" x2="98" y2="55"/><line x1="102" y1="50" x2="102" y2="55"/><line x1="105" y1="50" x2="105" y2="55"/></g>
+    <line x1="74" y1="36" x2="104" y2="36" stroke="#c7c7cc" stroke-width="1.5"/><line x1="74" y1="41" x2="98" y2="41" stroke="#c7c7cc" stroke-width="1.5"/>
+    <line x1="0" y1="78" x2="120" y2="78" stroke="#d2d2d7" stroke-width="1" stroke-dasharray="3 3"/>
   </g></g>
-  <g class="bob b3"><g transform="translate(160,62)">
-    <path d="M10 12 C10 0 28 0 28 12" fill="none" stroke="#7a5230" stroke-width="2.6" stroke-linecap="round"/>
-    <path d="M38 10 l9 5 v48 l-9 -3z" fill="url(#kraftS)"/><rect x="0" y="10" width="38" height="53" rx="2" fill="url(#kraftF)"/>
-    <rect x="0" y="10" width="38" height="5" fill="#b98a59"/><circle cx="19" cy="38" r="7" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="2"/>
+  <!-- front: small kraft courier bag with open peel strip -->
+  <g class="bob b3"><g transform="translate(178,62) rotate(-6 40 30) scale(.82)">
+    <rect x="0" y="0" width="80" height="58" rx="3" fill="url(#kraftF)"/>
+    <path d="M0 0 h80 v-10 q-40 -6 -80 0z" fill="#c9985f"/>
+    <rect x="6" y="-8" width="68" height="4" rx="2" fill="#f4ead9"/>
+    <rect x="10" y="20" width="34" height="20" rx="2" fill="#f7efe3"/>
+    <line x1="14" y1="26" x2="40" y2="26" stroke="#c9b597" stroke-width="1.4"/><line x1="14" y1="31" x2="34" y2="31" stroke="#c9b597" stroke-width="1.4"/>
   </g></g>
+  <path class="leaf" d="M14 22c8-7 18-6 21 0-8 6-16 6-21 0z" fill="rgba(255,255,255,.22)"/>
 </svg></div>
         <div>
           <h2 id="greetingText">Welcome back, Admin! &#128075;</h2>
