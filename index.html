@@ -776,6 +776,16 @@ html.reveal body{background:#f5f5f7}
 .kpi .mc-sh{grid-row:6}
 .sidebar-footer b,.sidebar-footer strong,.sidebar-footer span{color:var(--a-ink)!important}
 @media(max-width:700px){.kpi .k-value{font-size:21px}}
+/* Yesterday panel: clear separation between sections */
+.ys-sec{margin-top:34px;padding-top:30px;border-top:1px solid var(--a-hair,#e8e8ed);position:relative}
+.ys-sec::before{content:'';position:absolute;top:-1px;left:0;width:64px;height:3px;border-radius:3px;background:var(--a-blue,#0071e3)}
+.ys-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px}
+.ys-head h3{margin:0 0 3px;justify-content:flex-start;gap:10px}
+.ys-head .ph-note{margin-bottom:0}
+.ys-ico{flex:none;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:20px;background:color-mix(in srgb,var(--c) 14%,#fff);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 22%,#fff)}
+.ys-eyebrow{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--a-blue,#0071e3);margin-bottom:2px}
+#todaySummaryPanel .kpi-grid{margin-bottom:4px}
+@media(max-width:700px){.ys-sec{margin-top:26px;padding-top:22px}.ys-ico{width:36px;height:36px;font-size:17px}}
 </style>
 </head>
 <body>
@@ -1104,23 +1114,30 @@ html.reveal body{background:#f5f5f7}
 
       <!-- ============ TODAY'S SUMMARY (always shows the latest logged date, unaffected by sidebar filters) ============ -->
       <div class="panel" id="todaySummaryPanel" style="margin-bottom:16px;">
+        <div class="ys-eyebrow" style="margin-bottom:2px">Section 1</div>
         <h3>Yesterday's Summary <span id="ts-date" style="font-family:var(--mono);font-size:11px;color:var(--text-2);font-weight:500;"></span></h3>
         <div class="ph-note">Shows the previous working day (Sundays are skipped automatically) &mdash; independent of sidebar filters, for quick MD review.</div>
       <div style="display:flex;justify-content:flex-end;margin:-4px 0 12px;">
         <button class="btn primary" id="btnPrevData" type="button">&#128193; Previous Data</button>
       </div>
-        <div class="kpi-grid" id="todayKpiGrid" style="margin-bottom:14px;"></div>
+        <div class="kpi-grid" id="todayKpiGrid" style="margin-bottom:6px;"></div>
 
-        <h3 style="margin-top:18px;">Shift-wise Production <span id="msDate" style="font-family:var(--mono);font-size:11px;color:var(--text-2);font-weight:500;"></span></h3>
-        <div class="ph-note">Total units produced in each shift (all machines)</div>
-        <div class="kpi-grid" id="shiftKpiGrid" style="margin-bottom:14px;"></div>
+        <section class="ys-sec">
+          <div class="ys-head"><span class="ys-ico" style="--c:#ff9f0a">&#9203;</span><div><div class="ys-eyebrow">Section 2</div><h3>Shift-wise Production <span id="msDate" style="font-family:var(--mono);font-size:11px;color:var(--text-2);font-weight:500;"></span></h3>
+          <div class="ph-note">Total units produced in each shift (all machines)</div></div></div>
+          <div class="kpi-grid" id="shiftKpiGrid"></div>
+        </section>
 
-        <h3 style="margin-top:18px;">Machine-wise Production</h3>
-        <div class="ph-note">Each machine: total production and production in each shift</div>
-        <div class="kpi-grid mc-grid" id="machineKpiGrid" style="margin-bottom:14px;"></div>
-        
-        <h3 style="margin-top:18px;">Machine &middot; Shift &middot; Operator detail <span id="ydDetailDate" style="font-family:var(--mono);font-size:11px;color:var(--text-2);font-weight:500;"></span></h3>
-        <div class="ph-note">Units, weight, rejection, rejection % and downtime for each machine, shift and operator on that day</div>
+        <section class="ys-sec">
+          <div class="ys-head"><span class="ys-ico" style="--c:#34c759">&#9881;&#65039;</span><div><div class="ys-eyebrow">Section 3</div><h3>Machine-wise Production</h3>
+          <div class="ph-note">Each machine: total production and production in each shift</div></div></div>
+          <div class="kpi-grid mc-grid" id="machineKpiGrid"></div>
+        </section>
+
+        <section class="ys-sec">
+        <div class="ys-head"><span class="ys-ico" style="--c:#af52de">&#128203;</span><div><div class="ys-eyebrow">Section 4</div>
+        <h3>Machine &middot; Shift &middot; Operator detail <span id="ydDetailDate" style="font-family:var(--mono);font-size:11px;color:var(--text-2);font-weight:500;"></span></h3>
+        <div class="ph-note">Units, weight, rejection, rejection % and downtime for each machine, shift and operator on that day</div></div></div>
         <div class="table-wrap">
           <table class="xl-table">
             <thead><tr><th>Machine</th><th>Shift</th><th>Supervisor</th><th>Operator</th><th>Plan</th><th>Units</th><th>Efficiency %</th><th>Weight (Kg)</th><th>Rej (Kg)</th><th>Rej %</th><th>DT (Hrs)</th></tr></thead>
@@ -1128,6 +1145,7 @@ html.reveal body{background:#f5f5f7}
           </table>
         </div>
         <div class="ph-note" style="margin-top:8px;">* 4 COLOUR &amp; SLITTING: Units and Weight are shown for reference only &mdash; they are not added to the Grand Total (Rejection is).</div>
+        </section>
       </div>
 
       <!-- ============ OVERVIEW ============ -->
