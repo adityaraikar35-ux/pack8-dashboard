@@ -407,6 +407,42 @@ html.dept-stores #btnRefresh,html.dept-stores .fab-filter .filter-badge{display:
 .st-tbl td.bad{color:var(--bad);font-weight:600;background:var(--bad-soft)}
 .st-tbl td.tot{font-weight:600;background:#f3f8ff}
 
+/* ---------- filters: one button, one panel ---------- */
+.fp-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:-4px 0 16px}
+.fp-toggle{height:38px;border-radius:19px;padding:0 16px;background:var(--card);border:0;box-shadow:var(--sh-card);font-weight:600}
+.fp-toggle .ico{color:var(--blue)}
+.fp-toggle:hover{background:var(--card);box-shadow:var(--sh-lift)}
+.fp-toggle[aria-expanded="true"]{background:var(--blue);color:#fff}
+.fp-toggle[aria-expanded="true"] .ico{color:#fff}
+.fp-chev{width:14px;height:14px;transition:transform .45s var(--glide)}
+.fp-toggle[aria-expanded="true"] .fp-chev{transform:rotate(180deg)}
+.fp-dot{display:none;width:7px;height:7px;border-radius:50%;background:var(--blue)}
+.fp-dot.on{display:inline-block}
+.fp-toggle[aria-expanded="true"] .fp-dot{background:#fff}
+.fp-summary{font-size:12.5px;color:var(--ink-3);line-height:18px}
+.fp-summary b{color:var(--ink);font-weight:600}
+.filter-panel{display:grid;grid-template-rows:1fr;transition:grid-template-rows .5s var(--glide),opacity .35s var(--ease),margin .5s var(--glide);margin-bottom:20px}
+.filter-panel.collapsed{grid-template-rows:0fr;opacity:0;margin-bottom:0;pointer-events:none}
+.fp-inner{min-height:0;overflow:hidden}
+.filter-panel.settled .fp-inner{overflow:visible}
+.fp-card{background:var(--card);border-radius:var(--r-panel);box-shadow:var(--sh-card);padding:18px 22px 20px}
+.fp-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:14px}
+.fp-head h3{margin:0;font-family:var(--disp);font-size:16px;font-weight:600;letter-spacing:-.015em}
+.fp-head p{margin:2px 0 0;font-size:12.5px;color:var(--ink-3)}
+.fp-card .filterbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 14px;margin:0;align-items:start}
+.fp-actions{display:flex;gap:8px;align-self:start;margin-top:20px}
+.fp-actions .btn{flex:1;height:36px}
+.fp-actions .btn.primary{border-radius:18px}
+.fp-card .quick-row .btn{height:36px}
+.fp-card .quick-note{color:var(--ink-3);font-size:11.5px;margin-top:6px}
+.msel-panel .msel-item,.msel-panel .msel-item span{color:var(--ink)!important;font-size:13px;font-weight:500}
+html.dept-stores .fp-bar,html.dept-stores .filter-panel{display:none!important}
+#ysShiftSec[hidden]{display:none!important}
+.fd-wrap{max-height:520px}
+#fdTable tfoot td{background:var(--blue);color:#fff;border:0}
+@media(max-width:1100px){.fp-card .filterbar{grid-template-columns:repeat(2,minmax(0,1fr))}.fp-actions{margin-top:0}}
+@media(max-width:520px){.fp-card .filterbar{grid-template-columns:1fr}.fp-card{padding:16px}}
+
 /* =====================================================================
    motion: one easing family, transform + opacity (+ a short blur)
    ===================================================================== */
@@ -544,62 +580,6 @@ tbody tr:nth-child(-n+30){animation:rowIn .45s var(--ease) both}
       <button type="button" data-target="st-sec-reg"><svg class="ico" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Monthly register</button>
     </div>
 
-    <div class="sidebar-card">
-      <h4>Filters</h4>
-      <div class="sidebar-note">Overview, Products, Operators and Data table. Tick several values, results update straight away.</div>
-      <div class="filterbar">
-        <div class="fgroup">
-          <label>Machine</label>
-          <div class="msel" id="msel-machine">
-            <button type="button" class="msel-btn">All machines</button>
-            <div class="msel-panel"></div>
-          </div>
-        </div>
-        <div class="fgroup">
-          <label>Operator</label>
-          <div class="msel" id="msel-operator">
-            <button type="button" class="msel-btn">All operators</button>
-            <div class="msel-panel"></div>
-          </div>
-        </div>
-        <div class="fgroup">
-          <label>Supervisor</label>
-          <div class="msel" id="msel-supervisor">
-            <button type="button" class="msel-btn">All supervisors</button>
-            <div class="msel-panel"></div>
-          </div>
-        </div>
-        <div class="fgroup">
-          <label>Shift</label>
-          <div class="msel" id="msel-shift">
-            <button type="button" class="msel-btn">All shifts</button>
-            <div class="msel-panel"></div>
-          </div>
-        </div>
-        <div class="fgroup">
-          <label>From</label>
-          <input type="date" id="f-from">
-        </div>
-        <div class="fgroup">
-          <label>To</label>
-          <input type="date" id="f-to">
-        </div>
-        <div class="fgroup">
-          <label>Quick range</label>
-          <div class="quick-row">
-            <button class="btn sm" id="btnRangeToday" type="button">Today</button>
-            <button class="btn sm" id="btnRangeMTD" type="button" title="Month to date">Month</button>
-            <button class="btn sm" id="btnRangeQTD" type="button" title="Quarter to date">Quarter</button>
-          </div>
-          <div class="quick-note" id="quickNote"></div>
-        </div>
-        <div class="sidebar-actions">
-          <button class="btn primary" id="btnApply" type="button">Apply filters</button>
-          <button class="btn" id="btnClearAll" type="button">Clear</button>
-        </div>
-      </div>
-    </div>
-
     <div class="sidebar-footer">
       <div class="sf-brand">PACK8 control room</div>
       <p>Version 2.1.0 &middot; &copy; 2026</p>
@@ -674,6 +654,75 @@ tbody tr:nth-child(-n+30){animation:rowIn .45s var(--ease) both}
           <div class="pill">Latest <b id="hdrCutoff">&mdash;</b></div>
           <div class="pill"><b id="hdrRecords">0</b> records</div>
           <div class="pill">Updated <b id="lastUpdated">&mdash;</b></div>
+        </div>
+      </div>
+
+      <div class="fp-bar">
+        <button type="button" class="btn fp-toggle" id="fpToggle" aria-expanded="false" aria-controls="filterPanel"><svg class="ico" aria-hidden="true"><use href="#i-sliders-horizontal"/></svg>Filters<span class="fp-dot" id="fpDot"></span><svg class="ico fp-chev" aria-hidden="true" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="fp-summary" id="fpSummary"></div>
+      </div>
+      <div class="filter-panel collapsed" id="filterPanel">
+        <div class="fp-inner">
+          <div class="fp-card">
+            <div class="fp-head">
+              <div>
+                <h3>Filters</h3>
+                <p>Overview, Products, Operators and Data table. Tick several values; results update straight away.</p>
+              </div>
+              <button type="button" class="btn sm" id="fpMin"><svg class="ico" aria-hidden="true" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></svg>Minimize</button>
+            </div>
+            <div class="filterbar">
+        <div class="fgroup">
+          <label>Machine</label>
+          <div class="msel" id="msel-machine">
+            <button type="button" class="msel-btn">All machines</button>
+            <div class="msel-panel"></div>
+          </div>
+        </div>
+        <div class="fgroup">
+          <label>Operator</label>
+          <div class="msel" id="msel-operator">
+            <button type="button" class="msel-btn">All operators</button>
+            <div class="msel-panel"></div>
+          </div>
+        </div>
+        <div class="fgroup">
+          <label>Supervisor</label>
+          <div class="msel" id="msel-supervisor">
+            <button type="button" class="msel-btn">All supervisors</button>
+            <div class="msel-panel"></div>
+          </div>
+        </div>
+        <div class="fgroup">
+          <label>Shift</label>
+          <div class="msel" id="msel-shift">
+            <button type="button" class="msel-btn">All shifts</button>
+            <div class="msel-panel"></div>
+          </div>
+        </div>
+        <div class="fgroup">
+          <label>From</label>
+          <input type="date" id="f-from">
+        </div>
+        <div class="fgroup">
+          <label>To</label>
+          <input type="date" id="f-to">
+        </div>
+        <div class="fgroup">
+          <label>Quick range</label>
+          <div class="quick-row">
+            <button class="btn sm" id="btnRangeToday" type="button">Today</button>
+            <button class="btn sm" id="btnRangeMTD" type="button" title="Month to date">Month</button>
+            <button class="btn sm" id="btnRangeQTD" type="button" title="Quarter to date">Quarter</button>
+          </div>
+          <div class="quick-note" id="quickNote"></div>
+        </div>
+        <div class="fp-actions">
+          <button class="btn primary" id="btnApply" type="button">Apply filters</button>
+          <button class="btn" id="btnClearAll" type="button">Clear</button>
+        </div>
+      </div>
+          </div>
         </div>
       </div>
 
@@ -776,13 +825,13 @@ tbody tr:nth-child(-n+30){animation:rowIn .45s var(--ease) both}
         <div class="ys-top">
           <div>
             <h3>Yesterday's production <span id="ts-date" class="h-date"></span></h3>
-            <div class="ph-note">Previous working day, Sundays skipped. Not affected by the sidebar filters.</div>
+            <div class="ph-note">Previous working day, Sundays skipped. The Filtered production table follows the Filters; everything else here does not.</div>
           </div>
           <button class="btn" id="btnPrevData" type="button"><svg class="ico" aria-hidden="true"><use href="#i-history"/></svg>Previous data</button>
         </div>
         <div class="kpi-grid" id="todayKpiGrid"></div>
 
-        <section class="ys-sec">
+        <section class="ys-sec" id="ysShiftSec" hidden>
           <div class="ys-head"><span class="ys-ico"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg></span><div><div class="ys-eyebrow">02</div><h3>Shift-wise production <span id="msDate" class="h-date"></span></h3>
           <div class="ph-note">Total units produced in each shift (all machines)</div></div></div>
           <div class="kpi-grid" id="shiftKpiGrid"></div>
@@ -792,6 +841,18 @@ tbody tr:nth-child(-n+30){animation:rowIn .45s var(--ease) both}
           <div class="ys-head"><span class="ys-ico"><svg class="ico" aria-hidden="true"><use href="#i-cog"/></svg></span><div><div class="ys-eyebrow">03</div><h3>Machine-wise production</h3>
           <div class="ph-note">Each machine: total production and production in each shift <span class="status-key"><i class="sdot"></i> produced <i class="sdot off"></i> no production</span></div></div></div>
           <div class="kpi-grid mc-grid" id="machineKpiGrid"></div>
+        </section>
+
+        <section class="ys-sec" id="filteredSec">
+          <div class="ys-head"><span class="ys-ico"><svg class="ico" aria-hidden="true"><use href="#i-sliders-horizontal"/></svg></span><div><h3>Filtered production <span id="fdCount" class="h-date"></span></h3>
+          <div class="ph-note" id="fdNote">Rows that match the Filters, newest first</div></div></div>
+          <div class="table-wrap fd-wrap">
+            <table id="fdTable">
+              <thead><tr><th>Date</th><th>Machine</th><th>Shift</th><th>Supervisor</th><th>Operator</th><th>Plan</th><th>Units</th><th>Efficiency %</th><th>Weight (Kg)</th><th>Rej (Kg)</th><th>Rej %</th><th>DT (Hrs)</th></tr></thead>
+              <tbody id="fdBody"></tbody>
+              <tfoot><tr id="fdTotal"></tr></tfoot>
+            </table>
+          </div>
         </section>
 
         <section class="ys-sec">
@@ -1754,6 +1815,20 @@ function renderOverviewExtras(recs){
   if(sb) sb.innerHTML = sh.length ? sh.map(function(g){
     return '<tr><td>'+escapeHtml(g.key)+'</td><td>'+fmtInt(g.qty)+'</td><td>'+fmtNum(g.wt,1)+'</td><td>'+fmtPct(g.rejPct)+'</td><td>'+fmtNum(g.dt,1)+'</td><td>'+effBadge(g.eff)+'</td></tr>';
   }).join('') : '<tr><td colspan="6" class="empty-msg">No data for this filter.</td></tr>';
+
+  var fb = document.getElementById('fdBody');
+  if(fb){
+    var fr = sortRows(groupRows(recs).filter(function(g){ return g.qty > 0 || g.wt > 0 || g.dq > 0 || g.dw > 0 || g.rejKg > 0 || g.dt > 0; }), true);
+    fb.innerHTML = fr.length ? fr.map(function(g){ return '<tr>'+rowCells(g,true)+'</tr>'; }).join('')
+      : '<tr><td colspan="12" class="empty-msg">No production matches the filters.</td></tr>';
+    var ft = document.getElementById('fdTotal');
+    // efficiency counts planned rows only, as everywhere else on the dashboard
+    var tt = totalsOf(fr), ps = planStats(recs);
+    if(ft) ft.innerHTML = fr.length ? '<td colspan="5">Total &middot; '+fr.length+' rows</td><td>'+(tt.plan > 0 ? fmtInt(tt.plan) : '—')+'</td><td>'+fmtInt(tt.qty)+'</td>'+effCell(ps.eff)+
+      '<td>'+fmtNum(tt.wt,1)+'</td><td>'+fmtNum(tt.rejKg,1)+'</td><td>'+fmtPct(tt.rejPct)+'</td><td>'+fmtNum(tt.dt,1)+'</td>' : '';
+    var fc = document.getElementById('fdCount');
+    if(fc) fc.textContent = fr.length ? (state.from || '') + ' \u2192 ' + (state.to || '') : '';
+  }
 
   var rb = document.getElementById('recentBody');
   var rows = sortRows(groupRows(recs).filter(function(g){ return g.dq > 0 || g.dw > 0 || g.rejKg > 0; }), true).slice(0, 12);
@@ -3276,6 +3351,30 @@ mainNav.addEventListener('click', function(e){
 storesNav.addEventListener('click', function(e){
   if(e.target.closest('button') && !root.classList.contains('dept-stores')) dept('stores');
 }, true);
+
+// Filters: one button opens the panel, Minimize closes it; the choice is remembered
+var fpPanel = document.getElementById('filterPanel'), fpToggle = document.getElementById('fpToggle');
+function setFilters(open, instant){
+  fpPanel.classList.toggle('collapsed', !open);
+  fpPanel.classList.remove('settled');
+  fpToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  if(open){ if(instant) fpPanel.classList.add('settled'); else setTimeout(function(){ if(!fpPanel.classList.contains('collapsed')) fpPanel.classList.add('settled'); }, 520); }
+  try{ localStorage.setItem('pack8-filters-open', open ? '1' : '0'); }catch(e){}
+}
+fpToggle.addEventListener('click', function(){ setFilters(fpPanel.classList.contains('collapsed')); });
+document.getElementById('fpMin').addEventListener('click', function(){ setFilters(false); fpToggle.focus(); });
+var fpStart = false; try{ fpStart = localStorage.getItem('pack8-filters-open') === '1'; }catch(e){}
+setFilters(fpStart, true);
+// what is applied, shown next to the button while the panel is closed
+var fpDot = document.getElementById('fpDot'), fpSum = document.getElementById('fpSummary'), badge = document.getElementById('filterBadge'), rsF = document.getElementById('rs-filters');
+function fpSync(){
+  var on = badge && badge.classList.contains('on');
+  fpDot.classList.toggle('on', !!on);
+  fpSum.innerHTML = on && rsF && document.querySelector('.view.active') && document.querySelector('.view.active').id !== 'view-machines' ? rsF.innerHTML : '';
+}
+if(badge) new MutationObserver(fpSync).observe(badge, {attributes:true, attributeFilter:['class']});
+if(rsF) new MutationObserver(fpSync).observe(rsF, {childList:true, subtree:true, characterData:true});
+fpSync();
 
 // right-align numeric columns in every table (the stores register already is)
 var NUM = /^[\u2212+-]?[\d,]+(\.\d+)?\s*(%|pts)?$/, DASH = /^[\u2014\u2013-]?$/;
