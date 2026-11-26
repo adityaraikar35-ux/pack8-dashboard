@@ -436,12 +436,40 @@ html.dept-stores #btnRefresh,html.dept-stores .fab-filter .filter-badge{display:
 .fp-card .quick-row .btn{height:36px}
 .fp-card .quick-note{color:var(--ink-3);font-size:11.5px;margin-top:6px}
 .msel-panel .msel-item,.msel-panel .msel-item span{color:var(--ink)!important;font-size:13px;font-weight:500}
-html.dept-stores .fp-bar,html.dept-stores .filter-panel{display:none!important}
+html:not(.dept-stores) #stFpAnchor{display:none!important}
 #ysShiftSec[hidden]{display:none!important}
 .fd-wrap{max-height:520px}
 #fdTable tfoot td{background:var(--blue);color:#fff;border:0}
 @media(max-width:1100px){.fp-card .filterbar{grid-template-columns:repeat(2,minmax(0,1fr))}.fp-actions{margin-top:0}}
 @media(max-width:520px){.fp-card .filterbar{grid-template-columns:1fr}.fp-card{padding:16px}}
+
+/* ---------- filter sheet v2: floats, fades and slides ---------- */
+.fp-anchor{position:relative;z-index:45}
+.fp-bar{margin:-4px 0 16px}
+.filter-panel{display:block;position:absolute;left:0;top:44px;width:min(1040px,100%);margin:0;opacity:1;transform:none;visibility:visible;transform-origin:24px 0;
+  transition:opacity .2s var(--ease),transform .38s var(--glide),visibility 0s linear 0s}
+.filter-panel.collapsed{opacity:0;transform:translateY(-8px) scale(.98);visibility:hidden;margin:0;pointer-events:none;
+  transition:opacity .16s var(--ease),transform .22s var(--ease),visibility 0s linear .22s}
+.fp-inner,.filter-panel.settled .fp-inner{overflow:visible;min-height:0}
+.fp-card{box-shadow:0 30px 70px -24px rgba(0,20,60,.42),0 2px 6px rgba(0,20,60,.06)}
+.st-fp .fp-card .st-ctrl,#stFilterPanel .st-ctrl{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+#stFilterPanel{width:min(640px,100%)}
+#stFilterPanel .st-ctrl label{min-width:160px}
+#filteredPanel{display:none;scroll-margin-top:76px}
+html.filters-on #filteredPanel{display:block}
+html.filters-on #todaySummaryPanel{display:none!important}
+.fd-wrap{max-height:560px}
+#filteredPanel .table-wrap.flush{margin-bottom:0;border-radius:0;border-bottom:1px solid var(--line)}
+.fd-more{display:flex;justify-content:center;padding:16px 0 0}
+#st-top{scroll-margin-top:76px}
+html.sheet-open .fab-filter{opacity:0;pointer-events:none}
+.fd-more[hidden]{display:none}
+#fdTable tfoot td{background:var(--blue);color:#fff;border:0}
+#fdCount{font-size:12.5px;color:var(--ink-3);font-weight:500}
+html.dept-stores #fpAnchor{display:none!important}
+#stFpAnchor .fp-bar{margin:0 0 8px}
+@media(max-width:960px){.filter-panel{position:fixed;left:12px;right:12px;top:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));width:auto;max-height:calc(100vh - 120px);overflow:auto;transform-origin:50% 100%;z-index:90}
+  .filter-panel.collapsed{transform:translateY(24px)}}
 
 /* =====================================================================
    motion: one easing family, transform + opacity (+ a short blur)
@@ -511,7 +539,7 @@ tbody tr:nth-child(-n+30){animation:rowIn .45s var(--ease) both}
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><!-- lucide icons, ISC licence --><symbol id="i-layout-dashboard" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1" /> <rect width="7" height="5" x="14" y="3" rx="1" /> <rect width="7" height="9" x="14" y="12" rx="1" /> <rect width="7" height="5" x="3" y="16" rx="1" /></symbol><symbol id="i-factory" viewBox="0 0 24 24"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" /> <path d="M17 18h1" /> <path d="M12 18h1" /> <path d="M7 18h1" /></symbol><symbol id="i-cog" viewBox="0 0 24 24"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" /> <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /> <path d="M12 2v2" /> <path d="M12 22v-2" /> <path d="m17 20.66-1-1.73" /> <path d="M11 10.27 7 3.34" /> <path d="m20.66 17-1.73-1" /> <path d="m3.34 7 1.73 1" /> <path d="M14 12h8" /> <path d="M2 12h2" /> <path d="m20.66 7-1.73 1" /> <path d="m3.34 17 1.73-1" /> <path d="m17 3.34-1 1.73" /> <path d="m11 13.73-4 6.93" /></symbol><symbol id="i-package" viewBox="0 0 24 24"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" /> <path d="M12 22V12" /> <path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7" /> <path d="m7.5 4.27 9 5.15" /></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /> <circle cx="9" cy="7" r="4" /> <path d="M22 21v-2a4 4 0 0 0-3-3.87" /> <path d="M16 3.13a4 4 0 0 1 0 7.75" /></symbol><symbol id="i-octagon-alert" viewBox="0 0 24 24"><path d="M12 16h.01" /> <path d="M12 8v4" /> <path d="M15.312 2a2 2 0 0 1 1.414.586l4.688 4.688A2 2 0 0 1 22 8.688v6.624a2 2 0 0 1-.586 1.414l-4.688 4.688a2 2 0 0 1-1.414.586H8.688a2 2 0 0 1-1.414-.586l-4.688-4.688A2 2 0 0 1 2 15.312V8.688a2 2 0 0 1 .586-1.414l4.688-4.688A2 2 0 0 1 8.688 2z" /></symbol><symbol id="i-timer" viewBox="0 0 24 24"><line x1="10" x2="14" y1="2" y2="2" /> <line x1="12" x2="15" y1="14" y2="11" /> <circle cx="12" cy="14" r="8" /></symbol><symbol id="i-table-2" viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18" /></symbol><symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /> <path d="M3 3v5h5" /> <path d="M12 7v5l4 2" /></symbol><symbol id="i-warehouse" viewBox="0 0 24 24"><path d="M22 8.35V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8.35A2 2 0 0 1 3.26 6.5l8-3.2a2 2 0 0 1 1.48 0l8 3.2A2 2 0 0 1 22 8.35Z" /> <path d="M6 18h12" /> <path d="M6 14h12" /> <rect width="12" height="12" x="6" y="10" /></symbol><symbol id="i-calendar-check" viewBox="0 0 24 24"><path d="M8 2v4" /> <path d="M16 2v4" /> <rect width="18" height="18" x="3" y="4" rx="2" /> <path d="M3 10h18" /> <path d="m9 16 2 2 4-4" /></symbol><symbol id="i-trending-up" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17" /> <polyline points="16 7 22 7 22 13" /></symbol><symbol id="i-clipboard-list" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" /> <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /> <path d="M12 11h4" /> <path d="M12 16h4" /> <path d="M8 11h.01" /> <path d="M8 16h.01" /></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /> <path d="m21 21-4.3-4.3" /></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /> <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" /></symbol><symbol id="i-settings" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /> <circle cx="12" cy="12" r="3" /></symbol><symbol id="i-refresh-cw" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /> <path d="M21 3v5h-5" /> <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /> <path d="M8 16H3v5" /></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <polyline points="12 6 12 12 16 14" /></symbol><symbol id="i-sliders-horizontal" viewBox="0 0 24 24"><line x1="21" x2="14" y1="4" y2="4" /> <line x1="10" x2="3" y1="4" y2="4" /> <line x1="21" x2="12" y1="12" y2="12" /> <line x1="8" x2="3" y1="12" y2="12" /> <line x1="21" x2="16" y1="20" y2="20" /> <line x1="12" x2="3" y1="20" y2="20" /> <line x1="14" x2="14" y1="2" y2="6" /> <line x1="8" x2="8" y1="10" y2="14" /> <line x1="16" x2="16" y1="18" y2="22" /></symbol></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><!-- lucide icons, ISC licence --><symbol id="i-layout-dashboard" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1" /> <rect width="7" height="5" x="14" y="3" rx="1" /> <rect width="7" height="9" x="14" y="12" rx="1" /> <rect width="7" height="5" x="3" y="16" rx="1" /></symbol><symbol id="i-factory" viewBox="0 0 24 24"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" /> <path d="M17 18h1" /> <path d="M12 18h1" /> <path d="M7 18h1" /></symbol><symbol id="i-cog" viewBox="0 0 24 24"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" /> <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /> <path d="M12 2v2" /> <path d="M12 22v-2" /> <path d="m17 20.66-1-1.73" /> <path d="M11 10.27 7 3.34" /> <path d="m20.66 17-1.73-1" /> <path d="m3.34 7 1.73 1" /> <path d="M14 12h8" /> <path d="M2 12h2" /> <path d="m20.66 7-1.73 1" /> <path d="m3.34 17 1.73-1" /> <path d="m17 3.34-1 1.73" /> <path d="m11 13.73-4 6.93" /></symbol><symbol id="i-package" viewBox="0 0 24 24"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" /> <path d="M12 22V12" /> <path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7" /> <path d="m7.5 4.27 9 5.15" /></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /> <circle cx="9" cy="7" r="4" /> <path d="M22 21v-2a4 4 0 0 0-3-3.87" /> <path d="M16 3.13a4 4 0 0 1 0 7.75" /></symbol><symbol id="i-octagon-alert" viewBox="0 0 24 24"><path d="M12 16h.01" /> <path d="M12 8v4" /> <path d="M15.312 2a2 2 0 0 1 1.414.586l4.688 4.688A2 2 0 0 1 22 8.688v6.624a2 2 0 0 1-.586 1.414l-4.688 4.688a2 2 0 0 1-1.414.586H8.688a2 2 0 0 1-1.414-.586l-4.688-4.688A2 2 0 0 1 2 15.312V8.688a2 2 0 0 1 .586-1.414l4.688-4.688A2 2 0 0 1 8.688 2z" /></symbol><symbol id="i-timer" viewBox="0 0 24 24"><line x1="10" x2="14" y1="2" y2="2" /> <line x1="12" x2="15" y1="14" y2="11" /> <circle cx="12" cy="14" r="8" /></symbol><symbol id="i-table-2" viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18" /></symbol><symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /> <path d="M3 3v5h5" /> <path d="M12 7v5l4 2" /></symbol><symbol id="i-warehouse" viewBox="0 0 24 24"><path d="M22 8.35V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8.35A2 2 0 0 1 3.26 6.5l8-3.2a2 2 0 0 1 1.48 0l8 3.2A2 2 0 0 1 22 8.35Z" /> <path d="M6 18h12" /> <path d="M6 14h12" /> <rect width="12" height="12" x="6" y="10" /></symbol><symbol id="i-calendar-check" viewBox="0 0 24 24"><path d="M8 2v4" /> <path d="M16 2v4" /> <rect width="18" height="18" x="3" y="4" rx="2" /> <path d="M3 10h18" /> <path d="m9 16 2 2 4-4" /></symbol><symbol id="i-trending-up" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17" /> <polyline points="16 7 22 7 22 13" /></symbol><symbol id="i-clipboard-list" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" /> <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /> <path d="M12 11h4" /> <path d="M12 16h4" /> <path d="M8 11h.01" /> <path d="M8 16h.01" /></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /> <path d="m21 21-4.3-4.3" /></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /> <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" /></symbol><symbol id="i-settings" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /> <circle cx="12" cy="12" r="3" /></symbol><symbol id="i-refresh-cw" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /> <path d="M21 3v5h-5" /> <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /> <path d="M8 16H3v5" /></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <polyline points="12 6 12 12 16 14" /></symbol><symbol id="i-sliders-horizontal" viewBox="0 0 24 24"><line x1="21" x2="14" y1="4" y2="4" /> <line x1="10" x2="3" y1="4" y2="4" /> <line x1="21" x2="12" y1="12" y2="12" /> <line x1="8" x2="3" y1="12" y2="12" /> <line x1="21" x2="16" y1="20" y2="20" /> <line x1="12" x2="3" y1="20" y2="20" /> <line x1="14" x2="14" y1="2" y2="6" /> <line x1="8" x2="8" y1="10" y2="14" /> <line x1="16" x2="16" y1="18" y2="22" /></symbol><symbol id="i-calendar-range" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2" /> <path d="M16 2v4" /> <path d="M3 10h18" /> <path d="M8 2v4" /> <path d="M17 14h-6" /> <path d="M13 18H7" /> <path d="M7 14h.01" /> <path d="M17 18h.01" /></symbol></svg>
 <!-- ===== animated intro ===== -->
 <script>
 // quick circular reveal of the dashboard on page load (machine intro removed)
@@ -574,8 +602,9 @@ tbody tr:nth-child(-n+30){animation:rowIn .45s var(--ease) both}
 
     <div class="nav" id="storesNav">
       <div class="nav-label">Stores</div>
-      <button type="button" data-target="st-sec-month"><svg class="ico" aria-hidden="true"><use href="#i-warehouse"/></svg> Store dashboard</button>
+      <button type="button" data-target="st-top"><svg class="ico" aria-hidden="true"><use href="#i-warehouse"/></svg> Store dashboard</button>
       <button type="button" data-target="st-sec-yday"><svg class="ico" aria-hidden="true"><use href="#i-calendar-check"/></svg> Yesterday</button>
+      <button type="button" data-target="st-sec-month"><svg class="ico" aria-hidden="true"><use href="#i-calendar-range"/></svg> Month at a glance</button>
       <button type="button" data-target="st-sec-trends"><svg class="ico" aria-hidden="true"><use href="#i-trending-up"/></svg> Trends</button>
       <button type="button" data-target="st-sec-reg"><svg class="ico" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Monthly register</button>
     </div>
@@ -657,6 +686,7 @@ tbody tr:nth-child(-n+30){animation:rowIn .45s var(--ease) both}
         </div>
       </div>
 
+      <div class="fp-anchor" id="fpAnchor">
       <div class="fp-bar">
         <button type="button" class="btn fp-toggle" id="fpToggle" aria-expanded="false" aria-controls="filterPanel"><svg class="ico" aria-hidden="true"><use href="#i-sliders-horizontal"/></svg>Filters<span class="fp-dot" id="fpDot"></span><svg class="ico fp-chev" aria-hidden="true" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="fp-summary" id="fpSummary"></div>
@@ -725,28 +755,43 @@ tbody tr:nth-child(-n+30){animation:rowIn .45s var(--ease) both}
           </div>
         </div>
       </div>
+      </div>
 
       <!-- ============ STORES (shown when the Production | Stores switch is on Stores) ============ -->
       <div id="storesApp" class="enter-host">
-        <div class="st-head">
+        <div class="st-head" id="st-top">
           <div>
             <h2>Store dashboard</h2>
             <p id="st-sub">Loading stores data&hellip;</p>
           </div>
+        </div>
+        <div class="fp-anchor" id="stFpAnchor">
+          <div class="fp-bar">
+            <button type="button" class="btn fp-toggle" id="stFpToggle" aria-expanded="false" aria-controls="stFilterPanel"><svg class="ico" aria-hidden="true"><use href="#i-sliders-horizontal"/></svg>Filters<svg class="ico fp-chev" aria-hidden="true" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+            <div class="fp-summary" id="stFpSummary"></div>
+          </div>
+          <div class="filter-panel collapsed" id="stFilterPanel">
+            <div class="fp-inner"><div class="fp-card">
+              <div class="fp-head">
+                <div><h3>Store filters</h3><p>Month for the register, trends and month figures; day for the Yesterday view.</p></div>
+                <button type="button" class="btn sm" id="stFpMin"><svg class="ico" aria-hidden="true" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></svg>Minimize</button>
+              </div>
           <div class="st-ctrl">
             <label>Month<select id="st-month"></select></label>
             <label>Day<input type="date" id="st-day"></label>
             <button class="btn primary" id="st-refresh" type="button"><svg class="ico" aria-hidden="true"><use href="#i-refresh-cw"/></svg>Refresh</button>
             <span class="st-upd" id="st-upd"></span>
           </div>
+            </div></div>
+          </div>
         </div>
         <div class="st-err" id="st-err"></div>
 
-        <div class="st-sec" id="st-sec-month"><h3>Month at a glance</h3><small id="st-monthlbl"></small></div>
-        <div class="kpi-grid" id="st-kpis"></div>
-
         <div class="st-sec" id="st-sec-yday"><h3 id="st-ydaytitle">Yesterday</h3><small>day value &middot; month-to-date &middot; change vs previous working day</small></div>
         <div class="st-yday" id="st-yday"></div>
+
+        <div class="st-sec" id="st-sec-month"><h3>Month at a glance</h3><small id="st-monthlbl"></small></div>
+        <div class="kpi-grid" id="st-kpis"></div>
 
         <div class="st-sec" id="st-sec-trends"><h3>Trends</h3><small>hover a day to see values</small></div>
         <div class="grid-2">
@@ -820,12 +865,24 @@ tbody tr:nth-child(-n+30){animation:rowIn .45s var(--ease) both}
 
       <!-- ============ OVERVIEW ============ -->
       <div class="view active" id="view-overview">
+    <div class="panel" id="filteredPanel" style="margin-bottom:16px;">
+      <h3>Filtered production <span id="fdCount"></span></h3>
+      <div class="ph-note" id="fdNote">Every row that matches the Filters, newest first. Clear the filters to see yesterday's production here again.</div>
+      <div class="table-wrap flush fd-wrap">
+        <table id="fdTable">
+          <thead><tr><th>Date</th><th>Machine</th><th>Shift</th><th>Supervisor</th><th>Operator</th><th>Plan</th><th>Units</th><th>Efficiency %</th><th>Weight (Kg)</th><th>Rej (Kg)</th><th>Rej %</th><th>DT (Hrs)</th></tr></thead>
+          <tbody id="fdBody"></tbody>
+          <tfoot><tr id="fdTotal"></tr></tfoot>
+        </table>
+      </div>
+      <div class="fd-more" id="fdMoreWrap"><button type="button" class="btn" id="fdMore">Show all rows</button></div>
+    </div>
     <!-- ============ YESTERDAY (previous working day, most important) (always shows the latest logged date, unaffected by sidebar filters) ============ -->
       <div class="panel" id="todaySummaryPanel" style="margin-bottom:16px;">
         <div class="ys-top">
           <div>
             <h3>Yesterday's production <span id="ts-date" class="h-date"></span></h3>
-            <div class="ph-note">Previous working day, Sundays skipped. The Filtered production table follows the Filters; everything else here does not.</div>
+            <div class="ph-note">Previous working day, Sundays skipped. Apply a filter to see the filtered production here instead.</div>
           </div>
           <button class="btn" id="btnPrevData" type="button"><svg class="ico" aria-hidden="true"><use href="#i-history"/></svg>Previous data</button>
         </div>
@@ -843,18 +900,6 @@ tbody tr:nth-child(-n+30){animation:rowIn .45s var(--ease) both}
           <div class="kpi-grid mc-grid" id="machineKpiGrid"></div>
         </section>
 
-        <section class="ys-sec" id="filteredSec">
-          <div class="ys-head"><span class="ys-ico"><svg class="ico" aria-hidden="true"><use href="#i-sliders-horizontal"/></svg></span><div><h3>Filtered production <span id="fdCount" class="h-date"></span></h3>
-          <div class="ph-note" id="fdNote">Rows that match the Filters, newest first</div></div></div>
-          <div class="table-wrap fd-wrap">
-            <table id="fdTable">
-              <thead><tr><th>Date</th><th>Machine</th><th>Shift</th><th>Supervisor</th><th>Operator</th><th>Plan</th><th>Units</th><th>Efficiency %</th><th>Weight (Kg)</th><th>Rej (Kg)</th><th>Rej %</th><th>DT (Hrs)</th></tr></thead>
-              <tbody id="fdBody"></tbody>
-              <tfoot><tr id="fdTotal"></tr></tfoot>
-            </table>
-          </div>
-        </section>
-
         <section class="ys-sec">
         <div class="ys-head"><span class="ys-ico"><svg class="ico" aria-hidden="true"><use href="#i-clipboard-list"/></svg></span><div><div class="ys-eyebrow">04</div>
         <h3>Machine, shift and operator detail <span id="ydDetailDate" class="h-date"></span></h3>
@@ -870,13 +915,13 @@ tbody tr:nth-child(-n+30){animation:rowIn .45s var(--ease) both}
       </div>
 
 
-    <div class="sec-title" id="sec-range"><h2>Selected range</h2><p>Figures follow the Filters panel: machine, operator, supervisor, shift and dates</p></div>
-    <div class="kpi-grid" id="kpiGrid"></div>
     <div class="panel" style="margin-bottom:16px;">
         <h3>Machine performance <span id="mpfCount"></span></h3>
         <div class="ph-note">Filtered range &middot; efficiency = actual &divide; plan on planned rows</div>
         <div class="table-wrap flush"><table id="machinePerfTable"><thead><tr><th>Machine</th><th>Units</th><th>Weight (kg)</th><th>Rej (kg)</th><th>Rej %</th><th>DT (h)</th><th>Efficiency</th><th>Share of units</th></tr></thead><tbody id="machinePerfBody"></tbody></table></div>
     </div>
+    <div class="sec-title" id="sec-range"><h2>Selected range</h2><p>Figures follow the Filters panel: machine, operator, supervisor, shift and dates</p></div>
+    <div class="kpi-grid" id="kpiGrid"></div>
     <div class="grid-2">
       <div class="panel">
         <h3>Shift-wise production</h3>
@@ -1819,8 +1864,7 @@ function renderOverviewExtras(recs){
   var fb = document.getElementById('fdBody');
   if(fb){
     var fr = sortRows(groupRows(recs).filter(function(g){ return g.qty > 0 || g.wt > 0 || g.dq > 0 || g.dw > 0 || g.rejKg > 0 || g.dt > 0; }), true);
-    fb.innerHTML = fr.length ? fr.map(function(g){ return '<tr>'+rowCells(g,true)+'</tr>'; }).join('')
-      : '<tr><td colspan="12" class="empty-msg">No production matches the filters.</td></tr>';
+    FD_ROWS = fr; renderFdRows(false);
     var ft = document.getElementById('fdTotal');
     // efficiency counts planned rows only, as everywhere else on the dashboard
     var tt = totalsOf(fr), ps = planStats(recs);
@@ -1837,6 +1881,16 @@ function renderOverviewExtras(recs){
       '<td>'+fmtInt(g.dq)+'</td><td>'+fmtNum(g.dw,1)+'</td><td>'+fmtPct(g.rejPct)+'</td><td>'+effBadge(g.plan > 0 ? g.qty / g.plan * 100 : null)+'</td></tr>';
   }).join('') : '<tr><td colspan="8" class="empty-msg">No data for this filter.</td></tr>';
 }
+
+var FD_ROWS = [];
+function renderFdRows(all){
+  var fb = document.getElementById('fdBody'), more = document.getElementById('fdMoreWrap'); if(!fb) return;
+  var show = all ? FD_ROWS : FD_ROWS.slice(0, 150);
+  fb.innerHTML = show.length ? show.map(function(g){ return '<tr>'+rowCells(g,true)+'</tr>'; }).join('')
+    : '<tr><td colspan="12" class="empty-msg">No production matches the filters.</td></tr>';
+  if(more){ more.hidden = show.length >= FD_ROWS.length; var mb = document.getElementById('fdMore'); if(mb) mb.textContent = 'Show all ' + FD_ROWS.length.toLocaleString('en-IN') + ' rows'; }
+}
+document.getElementById('fdMore').addEventListener('click', function(){ renderFdRows(true); });
 
 function renderMachineStatus(){
   var host = document.getElementById('machineStatusWrap'); if(!host) return;
@@ -2183,7 +2237,9 @@ placeRejStrip('overview');
 
 // Sidebar Quick Filters (Machine/Operator/Shift/Date) only take effect when "OK — Apply Filters" is pressed.
 // The header search box (f-search) still filters live as you type — that's a separate, instant text search.
-document.getElementById('f-search').addEventListener('input', function(){ applyFilters(); });
+var _applyT = null;
+function scheduleApply(){ clearTimeout(_applyT); _applyT = setTimeout(applyFilters, 160); }
+document.getElementById('f-search').addEventListener('input', function(){ scheduleApply(); });
 
 function filterSummaryText(){
   var parts = [];
@@ -2811,11 +2867,11 @@ function applyData(records){
   if(MAX_DATE && (!toEl.value || toEl.value > MAX_DATE || toEl.value < MIN_DATE)) toEl.value = MAX_DATE;
 
   reapplyQuickAfterRefresh();   // keep Today / MTD / Quarterly after every data refresh
-  msMachine = buildMultiSelect('msel-machine', MACHINES, 'All machines', function(){ applyFilters(); });
-  msOperator = buildMultiSelect('msel-operator', ALL_OPERATORS, 'All operators', function(){ applyFilters(); });
+  msMachine = buildMultiSelect('msel-machine', MACHINES, 'All machines', scheduleApply);
+  msOperator = buildMultiSelect('msel-operator', ALL_OPERATORS, 'All operators', scheduleApply);
   ALL_SUPERVISORS = uniq(records.map(function(r){return r.sup;}).filter(Boolean)).sort();
-  msSupervisor = buildMultiSelect('msel-supervisor', ALL_SUPERVISORS, 'All supervisors', function(){ applyFilters(); });
-  msShift = buildMultiSelect('msel-shift', ALL_SHIFTS, 'All shifts', function(){ applyFilters(); });
+  msSupervisor = buildMultiSelect('msel-supervisor', ALL_SUPERVISORS, 'All supervisors', scheduleApply);
+  msShift = buildMultiSelect('msel-shift', ALL_SHIFTS, 'All shifts', scheduleApply);
 
   readFilters();
   renderOverview();
@@ -3346,6 +3402,7 @@ mainNav.addEventListener('click', function(e){
   var title = document.getElementById('pageTitle');
   if(title) title.textContent = b.hasAttribute('data-jump') ? b.textContent.trim() : (b.getAttribute('data-view') === 'overview' ? 'Production overview' : b.textContent.trim());
   var t = b.getAttribute('data-jump') && document.getElementById(b.getAttribute('data-jump'));
+  if(t && t.id === 'todaySummaryPanel' && root.classList.contains('filters-on')) t = document.getElementById('filteredPanel');
   if(t) requestAnimationFrame(function(){ t.scrollIntoView({behavior:'smooth', block:'start'}); });
 });
 storesNav.addEventListener('click', function(e){
@@ -3363,13 +3420,39 @@ function setFilters(open, instant){
 }
 fpToggle.addEventListener('click', function(){ setFilters(fpPanel.classList.contains('collapsed')); });
 document.getElementById('fpMin').addEventListener('click', function(){ setFilters(false); fpToggle.focus(); });
-var fpStart = false; try{ fpStart = localStorage.getItem('pack8-filters-open') === '1'; }catch(e){}
-setFilters(fpStart, true);
+setFilters(false, true);
+// the sheet closes after Apply, on Escape, and on a click outside it
+document.getElementById('btnApply').addEventListener('click', function(){ setFilters(false); });
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ setFilters(false); setStores(false); } });
+var stPanel = document.getElementById('stFilterPanel');
+document.addEventListener('click', function(e){
+  if(!fpPanel.classList.contains('collapsed') && !e.target.closest('#fpAnchor')){ setFilters(false); sheetFlag(); }
+  if(!stPanel.classList.contains('collapsed') && !e.target.closest('#stFpAnchor')) setStores(false);
+});
+
+// stores: same button, same sheet
+var stToggle = document.getElementById('stFpToggle');
+function setStores(open){ stPanel.classList.toggle('collapsed', !open); stToggle.setAttribute('aria-expanded', open ? 'true' : 'false'); sheetFlag(); }
+function sheetFlag(){ root.classList.toggle('sheet-open', !fpPanel.classList.contains('collapsed') || !stPanel.classList.contains('collapsed')); }
+fpToggle.addEventListener('click', sheetFlag); document.getElementById('fpMin').addEventListener('click', sheetFlag);
+document.getElementById('btnApply').addEventListener('click', sheetFlag);
+stToggle.addEventListener('click', function(){ setStores(stPanel.classList.contains('collapsed')); });
+document.getElementById('stFpMin').addEventListener('click', function(){ setStores(false); stToggle.focus(); });
+var stSum = document.getElementById('stFpSummary');
+function stSync(){
+  var m = document.getElementById('st-month'), d = document.getElementById('st-day'), u = document.getElementById('st-upd');
+  var mt = m && m.selectedIndex > -1 ? m.options[m.selectedIndex].text : '';
+  stSum.innerHTML = (mt ? '<b>Month:</b> ' + mt : '') + (d && d.value ? ' &nbsp;&middot;&nbsp; <b>Day:</b> ' + d.value : '') + (u && u.textContent ? ' &nbsp;&middot;&nbsp; ' + u.textContent : '');
+}
+['st-month','st-day'].forEach(function(id){ document.getElementById(id).addEventListener('change', function(){ setTimeout(stSync, 0); }); });
+new MutationObserver(stSync).observe(document.getElementById('st-upd'), {childList:true, characterData:true, subtree:true});
+new MutationObserver(stSync).observe(document.getElementById('st-month'), {childList:true});
 // what is applied, shown next to the button while the panel is closed
 var fpDot = document.getElementById('fpDot'), fpSum = document.getElementById('fpSummary'), badge = document.getElementById('filterBadge'), rsF = document.getElementById('rs-filters');
 function fpSync(){
   var on = badge && badge.classList.contains('on');
   fpDot.classList.toggle('on', !!on);
+  root.classList.toggle('filters-on', !!on);
   fpSum.innerHTML = on && rsF && document.querySelector('.view.active') && document.querySelector('.view.active').id !== 'view-machines' ? rsF.innerHTML : '';
 }
 if(badge) new MutationObserver(fpSync).observe(badge, {attributes:true, attributeFilter:['class']});
@@ -3398,11 +3481,18 @@ function alignTable(t){
   var c = 0; for(i = 0; i < head.cells.length; i++){ head.cells[i].classList.toggle('num', (score[c] || 0) > 0); c += head.cells[i].colSpan; }
   map.forEach(function(cells){ cells.forEach(function(x){ x[0].classList.toggle('num', x[0].colSpan === 1 && (score[x[1]] || 0) > 0); }); });
 }
-var pending = false;
-function alignAll(){ pending = false; document.querySelectorAll('table:not(.st-tbl)').forEach(alignTable); }
-new MutationObserver(function(){ if(!pending){ pending = true; requestAnimationFrame(alignAll); } })
+var pending = false, dirty = new Set();
+function alignAll(){ pending = false; var t = dirty; dirty = new Set(); t.forEach(function(x){ if(x.isConnected && !x.classList.contains('st-tbl')) alignTable(x); }); }
+new MutationObserver(function(list){
+  list.forEach(function(m){
+    var t = m.target.closest ? m.target.closest('table') : null;
+    if(t) dirty.add(t);
+    m.addedNodes.forEach(function(n){ if(n.nodeType === 1){ if(n.tagName === 'TABLE') dirty.add(n); else if(!t && n.querySelectorAll) n.querySelectorAll('table').forEach(function(x){ dirty.add(x); }); } });
+  });
+  if(dirty.size && !pending){ pending = true; requestAnimationFrame(alignAll); }
+})
   .observe(document.querySelector('.content'), {childList:true, subtree:true});
-alignAll();
+document.querySelectorAll('table:not(.st-tbl)').forEach(alignTable);
 })();
 </script>
 </body>
