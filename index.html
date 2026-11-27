@@ -471,6 +471,16 @@ html.dept-stores #fpAnchor{display:none!important}
 @media(max-width:960px){.filter-panel{position:fixed;left:12px;right:12px;top:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));width:auto;max-height:calc(100vh - 120px);overflow:auto;transform-origin:50% 100%;z-index:90}
   .filter-panel.collapsed{transform:translateY(24px)}}
 
+/* ---------- selected range: home inside yesterday, top while filtering ---------- */
+#filteredPanel,html.filters-on #filteredPanel{display:none!important}
+#rangeHome #rangeBlock{margin-top:28px;padding-top:4px;border-top:1px solid var(--line)}
+#rangeHome #rangeBlock .sec-title{margin-top:20px}
+#rangeHome #rangeBlock .kpi-grid{margin-bottom:0}
+#rangeTop #rangeBlock .sec-title{margin-top:0}
+#rangeTop #rangeBlock{margin-bottom:8px}
+#rangeBlock{scroll-margin-top:76px}
+#rangeBlock.enter .sec-title,#rangeBlock.enter .kpi,#rangeBlock.enter .kpi-sep{animation:blurIn .7s var(--ease) both!important;animation-delay:calc(var(--i,0) * 40ms)!important}
+
 /* =====================================================================
    motion: one easing family, transform + opacity (+ a short blur)
    ===================================================================== */
@@ -865,6 +875,7 @@ tbody tr:nth-child(-n+30){animation:rowIn .45s var(--ease) both}
 
       <!-- ============ OVERVIEW ============ -->
       <div class="view active" id="view-overview">
+    <div id="rangeTop"></div>
     <div class="panel" id="filteredPanel" style="margin-bottom:16px;">
       <h3>Filtered production <span id="fdCount"></span></h3>
       <div class="ph-note" id="fdNote">Every row that matches the Filters, newest first. Clear the filters to see yesterday's production here again.</div>
@@ -882,7 +893,7 @@ tbody tr:nth-child(-n+30){animation:rowIn .45s var(--ease) both}
         <div class="ys-top">
           <div>
             <h3>Yesterday's production <span id="ts-date" class="h-date"></span></h3>
-            <div class="ph-note">Previous working day, Sundays skipped. Apply a filter to see the filtered production here instead.</div>
+            <div class="ph-note">Previous working day, Sundays skipped. Apply a filter and the Selected range figures move up here.</div>
           </div>
           <button class="btn" id="btnPrevData" type="button"><svg class="ico" aria-hidden="true"><use href="#i-history"/></svg>Previous data</button>
         </div>
@@ -899,6 +910,13 @@ tbody tr:nth-child(-n+30){animation:rowIn .45s var(--ease) both}
           <div class="ph-note">Each machine: total production and production in each shift <span class="status-key"><i class="sdot"></i> produced <i class="sdot off"></i> no production</span></div></div></div>
           <div class="kpi-grid mc-grid" id="machineKpiGrid"></div>
         </section>
+
+        <div id="rangeHome">
+        <div id="rangeBlock">
+    <div class="sec-title" id="sec-range"><h2>Selected range</h2><p>Figures follow the Filters panel: machine, operator, supervisor, shift and dates</p></div>
+          <div class="kpi-grid" id="kpiGrid"></div>
+        </div>
+        </div>
 
         <section class="ys-sec">
         <div class="ys-head"><span class="ys-ico"><svg class="ico" aria-hidden="true"><use href="#i-clipboard-list"/></svg></span><div><div class="ys-eyebrow">04</div>
@@ -920,8 +938,6 @@ tbody tr:nth-child(-n+30){animation:rowIn .45s var(--ease) both}
         <div class="ph-note">Filtered range &middot; efficiency = actual &divide; plan on planned rows</div>
         <div class="table-wrap flush"><table id="machinePerfTable"><thead><tr><th>Machine</th><th>Units</th><th>Weight (kg)</th><th>Rej (kg)</th><th>Rej %</th><th>DT (h)</th><th>Efficiency</th><th>Share of units</th></tr></thead><tbody id="machinePerfBody"></tbody></table></div>
     </div>
-    <div class="sec-title" id="sec-range"><h2>Selected range</h2><p>Figures follow the Filters panel: machine, operator, supervisor, shift and dates</p></div>
-    <div class="kpi-grid" id="kpiGrid"></div>
     <div class="grid-2">
       <div class="panel">
         <h3>Shift-wise production</h3>
@@ -3402,7 +3418,7 @@ mainNav.addEventListener('click', function(e){
   var title = document.getElementById('pageTitle');
   if(title) title.textContent = b.hasAttribute('data-jump') ? b.textContent.trim() : (b.getAttribute('data-view') === 'overview' ? 'Production overview' : b.textContent.trim());
   var t = b.getAttribute('data-jump') && document.getElementById(b.getAttribute('data-jump'));
-  if(t && t.id === 'todaySummaryPanel' && root.classList.contains('filters-on')) t = document.getElementById('filteredPanel');
+  if(t && t.id === 'todaySummaryPanel' && root.classList.contains('filters-on')) t = document.getElementById('rangeBlock');
   if(t) requestAnimationFrame(function(){ t.scrollIntoView({behavior:'smooth', block:'start'}); });
 });
 storesNav.addEventListener('click', function(e){
@@ -3453,8 +3469,25 @@ function fpSync(){
   var on = badge && badge.classList.contains('on');
   fpDot.classList.toggle('on', !!on);
   root.classList.toggle('filters-on', !!on);
+  placeRange(!!on);
   fpSum.innerHTML = on && rsF && document.querySelector('.view.active') && document.querySelector('.view.active').id !== 'view-machines' ? rsF.innerHTML : '';
 }
+var rangeBlock = document.getElementById('rangeBlock'), rangeTop = document.getElementById('rangeTop'), rangeHome = document.getElementById('rangeHome'), rangeAt = 'home';
+function animateRange(){
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var items = rangeBlock.querySelectorAll('.sec-title, .kpi, .kpi-sep');
+  for(var i = 0; i < items.length; i++) items[i].style.setProperty('--i', Math.min(i, 16));
+  rangeBlock.classList.remove('enter'); void rangeBlock.offsetWidth; rangeBlock.classList.add('enter');
+  clearTimeout(rangeBlock._t); rangeBlock._t = setTimeout(function(){ rangeBlock.classList.remove('enter'); }, 1400);
+}
+function placeRange(on){
+  var want = on ? 'top' : 'home';
+  if(want === rangeAt) return;
+  (on ? rangeTop : rangeHome).appendChild(rangeBlock); rangeAt = want;
+  if(on){ animateRange(); if(document.querySelector('.view.active') && document.querySelector('.view.active').id === 'view-overview') rangeBlock.scrollIntoView({behavior:'smooth', block:'start'}); }
+}
+// every new set of figures while filtering rises in again
+new MutationObserver(function(){ if(rangeAt === 'top') animateRange(); }).observe(document.getElementById('kpiGrid'), {childList:true});
 if(badge) new MutationObserver(fpSync).observe(badge, {attributes:true, attributeFilter:['class']});
 if(rsF) new MutationObserver(fpSync).observe(rsF, {childList:true, subtree:true, characterData:true});
 fpSync();
